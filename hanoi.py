@@ -36,5 +36,24 @@ def move(peg1, peg2, peg3):
     peg2.append(peg1.pop())
 
 
-def solve(peg1, peg2, peg3):
-    pass
+def evenp(num):
+    return num % 2 == 0
+
+
+def oddp(num):
+    return not evenp(num)
+
+
+peg1 = init_peg(3)
+peg2 = []
+peg3 = []
+
+
+def solve3():
+    move(peg1, peg3)
+    move(peg1, peg2)
+    move(peg3, peg2)
+    move(peg1, peg3)
+    move(peg2, peg1)
+    move(peg2, peg3)
+    move(peg1, peg3)
