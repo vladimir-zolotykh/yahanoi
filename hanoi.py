@@ -32,8 +32,8 @@ def test_init_peg(num_disks, peg):
     assert init_peg(num_disks) == peg
 
 
-def move(peg1, peg2, peg3):
-    peg2.append(peg1.pop())
+def move(src, dst):
+    dst.append(src.pop())
 
 
 def evenp(num):
@@ -49,6 +49,16 @@ peg2 = []
 peg3 = []
 
 
+def solve1():
+    move(peg1, peg3)
+
+
+def solve2():
+    move(peg1, peg2)
+    move(peg1, peg3)
+    move(peg2, peg3)
+
+
 def solve3():
     move(peg1, peg3)
     move(peg1, peg2)
@@ -57,3 +67,21 @@ def solve3():
     move(peg2, peg1)
     move(peg2, peg3)
     move(peg1, peg3)
+
+
+def solve4():
+    move(1, 2)
+    move(1, 3)
+    move(2, 3)
+    move(1, 2)
+    move(3, 1)
+    move(3, 2)
+    move(1, 2)
+    move(1, 3)
+    move(2, 3)
+    move(2, 1)
+    move(3, 1)
+    move(2, 3)
+    move(1, 2)
+    move(1, 3)
+    move(2, 3)
