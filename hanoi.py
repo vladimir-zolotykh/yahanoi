@@ -44,29 +44,38 @@ def oddp(num):
     return not evenp(num)
 
 
-peg1 = init_peg(3)
-peg2 = []
-peg3 = []
+def gettmp(peg1, peg2):
+    return NotImplemented
+
+
+peg = [None] * 3
+peg[1] = init_peg(3)
+peg[2] = []
+peg[3] = []
+
+
+def solve(n: int, peg: list[list], src: int, dst: int, aux: int):
+    pass
 
 
 def solve1():
-    move(peg1, peg3)
+    move(1, 3)
 
 
 def solve2():
-    move(peg1, peg2)
-    move(peg1, peg3)
-    move(peg2, peg3)
+    move(1, 2)
+    move(1, 3)
+    move(2, 3)
 
 
 def solve3():
-    move(peg1, peg3)
-    move(peg1, peg2)
-    move(peg3, peg2)
-    move(peg1, peg3)
-    move(peg2, peg1)
-    move(peg2, peg3)
-    move(peg1, peg3)
+    move(1, 3)
+    move(1, 2)
+    move(3, 2)
+    move(1, 3)
+    move(2, 1)
+    move(2, 3)
+    move(1, 3)
 
 
 def solve4():
