@@ -10,7 +10,7 @@ class TupleMeta(type):
         super().__init__(clsname, bases, clsdict)
         fields = clsdict.get("_fields", [])
         for i, name in enumerate(fields):
-            setattr(cls, "name", property(itemgetter(i)))
+            setattr(cls, name, property(itemgetter(i)))
 
 
 class Tuple(tuple, metaclass=TupleMeta):
@@ -30,6 +30,8 @@ class Exercise(Tuple):
 def test_tuple():
     e = Exercise("squat", 77.5, 2)
     assert str(e) == "('squat', 77.5, 2)"
+    for name, val in zip(Exercise._fields, ("squat", 77.5, 2)):
+        assert getattr(e, name) == val
     with pytest.raises(TypeError, match="<class 'Exercise'>: gets exactly 3 arguments"):
         Exercise("squat", 77.5)
     with pytest.raises(TypeError, match="<class 'Exercise'>: gets exactly 3 arguments"):
