@@ -10,7 +10,7 @@ class Board:
     peg3 = []
 
 
-def init_peg(num_disks):
+def init_peg(num_disks: int):
     return list(range(num_disks, 0, -1))
 
 
@@ -32,65 +32,43 @@ def test_init_peg(num_disks, peg):
     assert init_peg(num_disks) == peg
 
 
-def move(src, dst):
-    dst.append(src.pop())
-
-
-def evenp(num):
+def evenp(num: int):
     return num % 2 == 0
 
 
-def oddp(num):
+def oddp(num: int):
     return not evenp(num)
 
 
 def gettmp(peg1, peg2):
-    return NotImplemented
+    assert peg1 != peg2 and peg1 in (1, 2, 3) and peg2 in (1, 2, 3)
+    return 6 - peg1 - peg2
 
 
-peg = [None] * 3
+@pytest.mark.parametrize(
+    "peg1, peg2, tmp",
+    [
+        (1, 2, 3),
+        (1, 3, 2),
+        (2, 1, 3),
+        (2, 3, 1),
+        (3, 2, 1),
+        (3, 1, 2),
+    ],
+)
+def test_gettmp(peg1, peg2, tmp):
+    assert gettmp(peg1, peg2) == tmp
+
+
+peg = [None] * 4
 peg[1] = init_peg(3)
 peg[2] = []
 peg[3] = []
 
 
-def solve(n: int, peg: list[list], src: int, dst: int, aux: int):
+def move(peg, src: int, dst: int) -> None:
+    peg[dst].append(peg[src].pop())
+
+
+def solve(n: int, peg, src: int, dst: int, tmp: int):
     pass
-
-
-def solve1():
-    move(1, 3)
-
-
-def solve2():
-    move(1, 2)
-    move(1, 3)
-    move(2, 3)
-
-
-def solve3():
-    move(1, 3)
-    move(1, 2)
-    move(3, 2)
-    move(1, 3)
-    move(2, 1)
-    move(2, 3)
-    move(1, 3)
-
-
-def solve4():
-    move(1, 2)
-    move(1, 3)
-    move(2, 3)
-    move(1, 2)
-    move(3, 1)
-    move(3, 2)
-    move(1, 2)
-    move(1, 3)
-    move(2, 3)
-    move(2, 1)
-    move(3, 1)
-    move(2, 3)
-    move(1, 2)
-    move(1, 3)
-    move(2, 3)
