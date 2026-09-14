@@ -6,7 +6,8 @@ from inspect import signature, _empty
 
 
 class MultiMethod:
-    def __init__(self, name):
+    def __init__(self, name: str = ""):
+        self._name = name
         self.methods = {}
 
     def __get__(self, instance, owner=None):
@@ -32,8 +33,11 @@ class MultiMethod:
 
 class MultiDict(dict):
     def __setitem__(self, key, val):
-        mm = self.setdefault(key, MultiMethod())
-        mm.register(val)
+        if key[:2] == "__" or key[-2:] == "__":
+            super().__setitem__(key, val)
+        else:
+            mm = self.setdefault(key, MultiMethod())
+            mm.register(val)
 
 
 class MultiMeta(type):
@@ -42,9 +46,9 @@ class MultiMeta(type):
         return MultiDict()
 
 
-class Box:
+class Box(metaclass=MultiMeta):
     def add(self, x: int, y: int) -> int:
-        print(f"add-int-int({x}, {y}")
+        print(f"add-int-int({x}, {y})")
         return x + y
 
     def add(self, x: float, y: float = 6.2) -> float:  # noqa: F811
@@ -52,7 +56,7 @@ class Box:
         return x + y
 
     def add(self, x: str, y: str) -> str:  # noqa: F811
-        print(f"add-str-str({x}, {y})")
+        print(f"add-str-str({x!r}, {y!r})")
         return x + y
 
 
