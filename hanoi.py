@@ -70,12 +70,12 @@ def move(peg, src: int, dst: int) -> None:
     peg[dst].append(peg[src].pop())
 
 
-num_disks = 0
+num_disks = -1
 
 
 def solve(peg, src: int, dst: int, tmp: int):
     global num_disks
-    if num_disks == 0:
+    if num_disks == -1:
         num_disks = len(peg[src])
     if len(dst) == num_disks:
         return
