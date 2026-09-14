@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from types import MethodType
+from functools import wraps
 from inspect import signature, _empty
 
 
@@ -46,17 +47,40 @@ class MultiMeta(type):
         return MultiDict()
 
 
+def show_types(func):
+    sig = signature(func)
+    fname = func.__name__
+    for name, parm in sig.parameters.items():
+        if name == "self":
+            continue
+        fname += "-" + parm.annotation.__name__
+        if parm.default is not _empty:
+            fname += f"[{parm.default}]"
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        sargs = ", ".join(str(a) for a in args[1:])
+        print(f"{fname}({sargs})")
+        res = func(*args, **kwargs)
+        return res
+
+    return wrapper
+
+
 class Box(metaclass=MultiMeta):
+    @show_types
     def add(self, x: int, y: int) -> int:
-        print(f"add-int-int({x}, {y})")
+        # print(f"add-int-int({x}, {y})")
         return x + y
 
+    @show_types
     def add(self, x: float, y: float = 6.2) -> float:  # noqa: F811
-        print(f"add-float-float[6.2]({x}, {y})")
+        # print(f"add-float-float[6.2]({x}, {y})")
         return x + y
 
+    @show_types
     def add(self, x: str, y: str) -> str:  # noqa: F811
-        print(f"add-str-str({x!r}, {y!r})")
+        # print(f"add-str-str({x!r}, {y!r})")
         return x + y
 
 
