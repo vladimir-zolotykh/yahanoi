@@ -62,12 +62,15 @@ def test_getaux(peg1, peg2, tmp):
 
 peg = []
 
+num_disks = -1
 
-def init_board(num_disks: int):
-    global peg
 
+def init_board(disks: int):
+    global num_disks, peg
+
+    num_disks = disks
     peg = [None] * 4
-    peg[1] = init_peg(num_disks)
+    peg[1] = init_peg(disks)
     peg[2] = []
     peg[3] = []
 
@@ -76,14 +79,11 @@ def move(peg, src: int, dst: int) -> None:
     peg[dst].append(peg[src].pop())
 
 
-num_disks = -1
-
-
 def solve(peg, src: int, dst: int):
     global num_disks
     if num_disks == -1:
         num_disks = len(peg[src])
-    if len(peg[dst]) == num_disks:
+    if len(peg[3]) == num_disks:
         return
     aux = getaux(src, dst)
     if oddp(num_disks):
@@ -95,7 +95,7 @@ def solve(peg, src: int, dst: int):
 
 
 def test_solve():
-    init_board(3)
+    init_board(1)
     solve(peg, 1, 3)
 
 
