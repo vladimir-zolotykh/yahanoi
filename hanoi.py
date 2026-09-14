@@ -62,8 +62,6 @@ def test_getaux(peg1, peg2, tmp):
 
 peg = []
 
-num_disks = -1
-
 
 def init_board(disks: int):
     global num_disks, peg
@@ -76,27 +74,54 @@ def init_board(disks: int):
 
 
 def move(peg, src: int, dst: int) -> None:
+    try:
+        assert peg[dst][-1] > peg[src][-1]
+    except IndexError:
+        pass
     peg[dst].append(peg[src].pop())
 
 
-def solve(peg, src: int, dst: int):
-    global num_disks
-    if num_disks == -1:
-        num_disks = len(peg[src])
-    if len(peg[3]) == num_disks:
-        return
-    aux = getaux(src, dst)
-    if oddp(num_disks):
-        move(peg, src, dst)
-    else:
-        move(peg, src, aux)
-    dst, src = src, dst
-    solve(peg, src, aux)
+def solve(peg, num_disks: int, src: int, dst: int):
+    if num_disks == 1:
+        move(peg, 1, 3)
+        assert len(peg[3]) == num_disks
+    elif num_disks == 2:
+        move(peg, 1, 2)
+        move(peg, 1, 3)
+        move(peg, 2, 3)
+        assert len(peg[3]) == num_disks
+    elif num_disks == 3:
+        move(peg, 1, 3)
+        move(peg, 1, 2)
+        move(peg, 3, 2)
+        move(peg, 1, 3)
+        move(peg, 2, 1)
+        move(peg, 2, 3)
+        move(peg, 1, 3)
+        assert len(peg[3]) == num_disks
+    elif num_disks == 4:
+        move(peg, 1, 2)
+        move(peg, 1, 3)
+        move(peg, 2, 3)
+        move(peg, 1, 2)
+        move(peg, 3, 1)
+        move(peg, 3, 2)
+        move(peg, 1, 2)
+        move(peg, 1, 3)
+        move(peg, 2, 3)
+        move(peg, 2, 1)
+        move(peg, 3, 1)
+        move(peg, 2, 3)
+        move(peg, 1, 2)
+        move(peg, 1, 3)
+        move(peg, 2, 3)
+        assert len(peg[3]) == num_disks
 
 
-def test_solve():
-    init_board(1)
-    solve(peg, 1, 3)
+@pytest.mark.parametrize("num_disks", (1, 2, 3, 4))
+def test_solve(num_disks):
+    init_board(num_disks)
+    solve(peg, num_disks, 1, 3)
 
 
 if __name__ == "__main__":
