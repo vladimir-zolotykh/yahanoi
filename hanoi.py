@@ -79,13 +79,17 @@ def move(peg, src: int, dst: int) -> None:
 num_disks = -1
 
 
-def solve(peg, src: int, dst: int, tmp: int):
+def solve(peg, src: int, dst: int):
     global num_disks
     if num_disks == -1:
         num_disks = len(peg[src])
-    if len(dst) == num_disks:
+    if len(peg[dst]) == num_disks:
         return
     aux = getaux(src, dst)
+    if oddp(num_disks):
+        move(peg, src, dst)
+    else:
+        move(peg, src, aux)
     dst, src = src, dst
     solve(peg, src, aux)
 
