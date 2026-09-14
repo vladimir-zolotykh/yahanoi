@@ -40,7 +40,7 @@ def oddp(num: int):
     return not evenp(num)
 
 
-def gettmp(peg1, peg2):
+def getaux(peg1, peg2):
     assert peg1 != peg2 and peg1 in (1, 2, 3) and peg2 in (1, 2, 3)
     return 6 - peg1 - peg2
 
@@ -56,8 +56,8 @@ def gettmp(peg1, peg2):
         (3, 1, 2),
     ],
 )
-def test_gettmp(peg1, peg2, tmp):
-    assert gettmp(peg1, peg2) == tmp
+def test_getaux(peg1, peg2, tmp):
+    assert getaux(peg1, peg2) == tmp
 
 
 peg = [None] * 4
@@ -70,5 +70,15 @@ def move(peg, src: int, dst: int) -> None:
     peg[dst].append(peg[src].pop())
 
 
-def solve(n: int, peg, src: int, dst: int, tmp: int):
-    pass
+num_disks = 0
+
+
+def solve(peg, src: int, dst: int, tmp: int):
+    global num_disks
+    if num_disks == 0:
+        num_disks = len(peg[src])
+    if len(dst) == num_disks:
+        return
+    aux = getaux(src, dst)
+    dst, src = src, dst
+    solve(peg, src, aux)
