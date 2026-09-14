@@ -60,10 +60,16 @@ def test_getaux(peg1, peg2, tmp):
     assert getaux(peg1, peg2) == tmp
 
 
-peg = [None] * 4
-peg[1] = init_peg(3)
-peg[2] = []
-peg[3] = []
+peg = []
+
+
+def init_board(num_disks: int):
+    global peg
+
+    peg = [None] * 4
+    peg[1] = init_peg(num_disks)
+    peg[2] = []
+    peg[3] = []
 
 
 def move(peg, src: int, dst: int) -> None:
@@ -82,3 +88,13 @@ def solve(peg, src: int, dst: int, tmp: int):
     aux = getaux(src, dst)
     dst, src = src, dst
     solve(peg, src, aux)
+
+
+def test_solve():
+    init_board(3)
+    solve(peg, 1, 3)
+
+
+if __name__ == "__main__":
+    test_solve()
+    print(peg)
