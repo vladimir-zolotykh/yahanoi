@@ -43,15 +43,15 @@ class MultiMeta(type):
 
 
 class Box:
-    def add(x: int, y: int) -> int:
+    def add(self, x: int, y: int) -> int:
         print(f"add-int-int({x}, {y}")
         return x + y
 
-    def add(x: float, y: float = 6.2) -> float:  # noqa: F811
+    def add(self, x: float, y: float = 6.2) -> float:  # noqa: F811
         print(f"add-float-float[6.2]({x}, {y})")
         return x + y
 
-    def add(x: str, y: str) -> str:  # noqa: F811
+    def add(self, x: str, y: str) -> str:  # noqa: F811
         print(f"add-str-str({x}, {y})")
         return x + y
 
