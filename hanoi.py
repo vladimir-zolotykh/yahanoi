@@ -57,38 +57,38 @@ def solvedp(pegs: PegsType, num_disks: int) -> bool:
 @typechecked
 def solve(peg: PegsType, num_disks: int, src: int, dst: int) -> None:
     if num_disks == 1:
-        move(peg, 1, 3)
+        move(peg, 1, 3)  # aux: 2
         assert solvedp(peg, num_disks)
     elif num_disks == 2:
-        move(peg, 1, 2)
-        move(peg, 1, 3)
-        move(peg, 2, 3)
+        move(peg, 1, 2)  # aux: 3
+        move(peg, 1, 3)  # aux: 2
+        move(peg, 2, 3)  # aux: 1
         assert solvedp(peg, num_disks)
     elif num_disks == 3:
-        move(peg, 1, 3)
-        move(peg, 1, 2)
-        move(peg, 3, 2)
-        move(peg, 1, 3)
-        move(peg, 2, 1)
-        move(peg, 2, 3)
-        move(peg, 1, 3)
+        move(peg, 1, 3)  # aux: 2
+        move(peg, 1, 2)  # aux: 3
+        move(peg, 3, 2)  # aux: 1
+        move(peg, 1, 3)  # aux: 2
+        move(peg, 2, 1)  # aux: 3
+        move(peg, 2, 3)  # aux: 1
+        move(peg, 1, 3)  # aux: 2
         assert solvedp(peg, num_disks)
     elif num_disks == 4:
-        move(peg, 1, 2)
-        move(peg, 1, 3)
-        move(peg, 2, 3)
-        move(peg, 1, 2)
-        move(peg, 3, 1)
-        move(peg, 3, 2)
-        move(peg, 1, 2)
-        move(peg, 1, 3)
-        move(peg, 2, 3)
-        move(peg, 2, 1)
-        move(peg, 3, 1)
-        move(peg, 2, 3)
-        move(peg, 1, 2)
-        move(peg, 1, 3)
-        move(peg, 2, 3)
+        move(peg, 1, 2)  # aux: 3
+        move(peg, 1, 3)  # aux: 2
+        move(peg, 2, 3)  # aux: 1
+        move(peg, 1, 2)  # aux: 3
+        move(peg, 3, 1)  # aux: 2
+        move(peg, 3, 2)  # aux: 1
+        move(peg, 1, 2)  # aux: 3
+        move(peg, 1, 3)  # aux: 2
+        move(peg, 2, 3)  # aux: 1
+        move(peg, 2, 1)  # aux: 3
+        move(peg, 3, 1)  # aux: 2
+        move(peg, 2, 3)  # aux: 1
+        move(peg, 1, 2)  # aux: 3
+        move(peg, 1, 3)  # aux: 2
+        move(peg, 2, 3)  # aux: 1
         assert solvedp(peg, num_disks)
 
 
