@@ -50,15 +50,20 @@ def move(peg: PegsType, src: int, dst: int) -> None:
 
 
 @typechecked
+def solvedp(pegs: PegsType, num_disks: int) -> bool:
+    return True if len(pegs[3]) == num_disks else False
+
+
+@typechecked
 def solve(peg: PegsType, num_disks: int, src: int, dst: int) -> None:
     if num_disks == 1:
         move(peg, 1, 3)
-        assert len(peg[3]) == num_disks
+        assert solvedp(peg, num_disks)
     elif num_disks == 2:
         move(peg, 1, 2)
         move(peg, 1, 3)
         move(peg, 2, 3)
-        assert len(peg[3]) == num_disks
+        assert solvedp(peg, num_disks)
     elif num_disks == 3:
         move(peg, 1, 3)
         move(peg, 1, 2)
@@ -67,7 +72,7 @@ def solve(peg: PegsType, num_disks: int, src: int, dst: int) -> None:
         move(peg, 2, 1)
         move(peg, 2, 3)
         move(peg, 1, 3)
-        assert len(peg[3]) == num_disks
+        assert solvedp(peg, num_disks)
     elif num_disks == 4:
         move(peg, 1, 2)
         move(peg, 1, 3)
@@ -84,7 +89,7 @@ def solve(peg: PegsType, num_disks: int, src: int, dst: int) -> None:
         move(peg, 1, 2)
         move(peg, 1, 3)
         move(peg, 2, 3)
-        assert len(peg[3]) == num_disks
+        assert solvedp(peg, num_disks)
 
 
 if __name__ == "__main__":
