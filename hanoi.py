@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from typeguard import typechecked
+
 _PegType = list[int]
 PegsType = list[_PegType]
 
@@ -31,12 +33,14 @@ def getaux(peg1, peg2):
 peg: PegsType = [[0]] * 4
 
 
+@typechecked
 def init_board(pegs: PegsType, disks: int) -> None:
     pegs[1] = init_peg(disks)
     pegs[2] = []
     pegs[3] = []
 
 
+@typechecked
 def move(peg: PegsType, src: int, dst: int) -> None:
     try:
         assert peg[dst][-1] > peg[src][-1]
@@ -45,6 +49,7 @@ def move(peg: PegsType, src: int, dst: int) -> None:
     peg[dst].append(peg[src].pop())
 
 
+@typechecked
 def solve(peg: PegsType, num_disks: int, src: int, dst: int) -> None:
     if num_disks == 1:
         move(peg, 1, 3)
