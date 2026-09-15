@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
-import pytest
+_PegType = list[int]
+PegsType = list[_PegType]
 
 
 class Board:
-    peg1 = []
-    peg2 = []
-    peg3 = []
+    peg1: _PegType = []
+    peg2: _PegType = []
+    peg3: _PegType = []
 
 
-def init_peg(num_disks: int):
+def init_peg(num_disks: int) -> _PegType:
     return list(range(num_disks, 0, -1))
 
 
-def evenp(num: int):
+def evenp(num: int) -> bool:
     return num % 2 == 0
 
 
-def oddp(num: int):
+def oddp(num: int) -> bool:
     return not evenp(num)
 
 
@@ -27,16 +28,16 @@ def getaux(peg1, peg2):
     return 6 - peg1 - peg2
 
 
-peg = [None] * 4
+peg: PegsType = [[0]] * 4
 
 
-def init_board(pegs: list[list], disks: int):
+def init_board(pegs: PegsType, disks: int) -> None:
     pegs[1] = init_peg(disks)
     pegs[2] = []
     pegs[3] = []
 
 
-def move(peg, src: int, dst: int) -> None:
+def move(peg: PegsType, src: int, dst: int) -> None:
     try:
         assert peg[dst][-1] > peg[src][-1]
     except IndexError:
@@ -44,7 +45,7 @@ def move(peg, src: int, dst: int) -> None:
     peg[dst].append(peg[src].pop())
 
 
-def solve(peg, num_disks: int, src: int, dst: int):
+def solve(peg: PegsType, num_disks: int, src: int, dst: int) -> None:
     if num_disks == 1:
         move(peg, 1, 3)
         assert len(peg[3]) == num_disks
