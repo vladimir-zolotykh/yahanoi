@@ -30,10 +30,10 @@ def getaux(peg1, peg2):
 peg = [None] * 4
 
 
-def init_board(disks: int):
-    peg[1] = init_peg(disks)
-    peg[2] = []
-    peg[3] = []
+def init_board(pegs: list[list], disks: int):
+    pegs[1] = init_peg(disks)
+    pegs[2] = []
+    pegs[3] = []
 
 
 def move(peg, src: int, dst: int) -> None:
@@ -83,6 +83,6 @@ def solve(peg, num_disks: int, src: int, dst: int):
 
 if __name__ == "__main__":
     num_disks = 3
-    init_board(num_disks)
+    init_board(peg, num_disks)
     solve(peg, num_disks, 1, 3)
     print(peg)

@@ -37,5 +37,5 @@ def test_getaux(peg1, peg2, tmp):
 
 @pytest.mark.parametrize("num_disks", (1, 2, 3, 4))
 def test_solve(num_disks):
-    init_board(num_disks)
+    init_board(peg, num_disks)
     solve(peg, num_disks, 1, 3)
