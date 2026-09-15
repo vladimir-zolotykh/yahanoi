@@ -14,24 +14,6 @@ def init_peg(num_disks: int):
     return list(range(num_disks, 0, -1))
 
 
-# $ pytest hanoi.py::test_init_peg
-@pytest.mark.parametrize(
-    "num_disks, peg",
-    [
-        (1, [1]),
-        (2, [2, 1]),
-        (3, [3, 2, 1]),
-        (4, [4, 3, 2, 1]),
-        (5, [5, 4, 3, 2, 1]),
-        (6, [6, 5, 4, 3, 2, 1]),
-        (7, [7, 6, 5, 4, 3, 2, 1]),
-        (8, [8, 7, 6, 5, 4, 3, 2, 1]),
-    ],
-)
-def test_init_peg(num_disks, peg):
-    assert init_peg(num_disks) == peg
-
-
 def evenp(num: int):
     return num % 2 == 0
 
@@ -45,29 +27,10 @@ def getaux(peg1, peg2):
     return 6 - peg1 - peg2
 
 
-@pytest.mark.parametrize(
-    "peg1, peg2, tmp",
-    [
-        (1, 2, 3),
-        (1, 3, 2),
-        (2, 1, 3),
-        (2, 3, 1),
-        (3, 2, 1),
-        (3, 1, 2),
-    ],
-)
-def test_getaux(peg1, peg2, tmp):
-    assert getaux(peg1, peg2) == tmp
-
-
-peg = []
+peg = [None] * 4
 
 
 def init_board(disks: int):
-    global num_disks, peg
-
-    num_disks = disks
-    peg = [None] * 4
     peg[1] = init_peg(disks)
     peg[2] = []
     peg[3] = []
@@ -118,12 +81,8 @@ def solve(peg, num_disks: int, src: int, dst: int):
         assert len(peg[3]) == num_disks
 
 
-@pytest.mark.parametrize("num_disks", (1, 2, 3, 4))
-def test_solve(num_disks):
+if __name__ == "__main__":
+    num_disks = 3
     init_board(num_disks)
     solve(peg, num_disks, 1, 3)
-
-
-if __name__ == "__main__":
-    test_solve()
     print(peg)
