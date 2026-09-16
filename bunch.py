@@ -28,6 +28,7 @@ class BunchMeta(type):
         clsdict["__slots__"] = ["name", "age", "pension"]
         clsdict["__init__"] = init
         clsdict["__repr__"] = repr
+        return super().__new__(mcls, clsname, bases, clsdict)
 
 
 class Person(metaclass=BunchMeta):
