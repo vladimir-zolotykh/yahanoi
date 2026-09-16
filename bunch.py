@@ -19,16 +19,18 @@ class BunchMeta(type):
             )
             return f"{type(self).__name__}({csv})"
 
+        clsdict2 = dict(clsdict)
         for key, val in clsdict.items():
             if key[:2] == "__" and key[-2:] == "__":
                 if key in ("__init__", "__repr__"):
                     raise TypeError(f"Cannot overwrite {key!r}")
                 continue
             defaults[key] = val
-        clsdict["__slots__"] = ["name", "age", "pension"]
-        clsdict["__init__"] = init
-        clsdict["__repr__"] = repr
-        return super().__new__(mcls, clsname, bases, clsdict)
+            del clsdict2[key]
+        clsdict2["__slots__"] = ["name", "age", "pension"]
+        clsdict2["__init__"] = init
+        clsdict2["__repr__"] = repr
+        return super().__new__(mcls, clsname, bases, clsdict2)
 
 
 class Person(metaclass=BunchMeta):
@@ -39,7 +41,7 @@ class Person(metaclass=BunchMeta):
 
 def test_person():
     p = Person()
-    print(p)
+    print(p.name, p.age, p.pension)
 
 
 if __name__ == "__main__":
