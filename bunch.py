@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+import re
+import pytest
 
 
 class BunchMeta(type):
@@ -9,7 +11,11 @@ class BunchMeta(type):
 
         def init(self, **kwargs):
             for key, val in defaults.items():
-                setattr(self, key, kwargs[key] if key in kwargs else val)
+                setattr(self, key, kwargs.pop(key) if key in kwargs else val)
+            if kwargs:
+                raise TypeError(
+                    f"<class {type(self).__name__!r}> has no slot(s) {', '.join(list(kwargs))!r}"
+                )
 
         def repr(self):
             csv = ", ".join(
@@ -41,7 +47,14 @@ class Person(metaclass=BunchMeta):
 
 def test_person():
     p = Person()
-    print(p.name, p.age, p.pension)
+    assert str(p) == "Person()"
+    assert (p.name, p.age, p.pension) == ("Vladimir", 61, 4606.93)
+    bob = Person(name="Bob", age=37)
+    assert str(bob) == "Person(name=Bob, age=37)"
+    with pytest.raises(
+        TypeError, match=re.escape("<class 'Person'> has no slot(s) 'job'")
+    ):
+        bob = Person(job="programmer")
 
 
 if __name__ == "__main__":
