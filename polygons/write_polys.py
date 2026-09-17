@@ -36,7 +36,7 @@ class Box:
         with io.BytesIO() as f:
             f.write(self.p1.packed())
             f.write(self.p2.packed())
-        return f.getvalue()
+            return f.getvalue()
 
 
 def get_bounding_box(polys: PolysType = POLYS) -> Box:
@@ -58,7 +58,7 @@ class Header:
             f.write(struct.pack("<i", self.magic))
             f.write(self.box.packed())
             f.write(struct.pack("<i", self.num_polys))
-        return f.getvalue()
+            return f.getvalue()
 
     @classmethod
     def default(cls):
@@ -70,7 +70,7 @@ _POLYS_BIN = ".polys.bin"
 
 def write_polys(filename: str = _POLYS_BIN, polys: PolysType = POLYS):
     header = Header.default()
-    with open("", "wb") as f:
+    with open(filename, "wb") as f:
         header.packed()
         for poly in polys:
             f.write(struct.pack("<i", len(poly)))
