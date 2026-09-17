@@ -84,37 +84,21 @@ def solve(peg: PegsType, num_disks: int, src: int, dst: int) -> None:
         stack2(peg, 1, 3, 2)
         assert solvedp(peg, num_disks)
     elif num_disks == 5:
-        move(peg, 1, 3)  # aux: 2
-        move(peg, 1, 2)  # aux: 3
-        move(peg, 3, 2)  # aux: 1
-        move(peg, 1, 3)  # aux: 2
-        move(peg, 2, 1)  # aux: 3
-        move(peg, 2, 3)  # aux: 1
-        move(peg, 1, 3)  # aux: 2
-        move(peg, 1, 2)  # aux: 3
-        move(peg, 3, 2)  # aux: 1
-        move(peg, 3, 1)  # aux: 2
-        move(peg, 2, 1)  # aux: 3
-        move(peg, 3, 2)  # aux: 1
-        move(peg, 1, 3)  # aux: 2
-        move(peg, 1, 2)  # aux: 3
-        move(peg, 3, 2)  # aux: 1
-        move(peg, 1, 3)  # aux: 2
-        move(peg, 2, 1)  # aux: 3
-        move(peg, 2, 3)  # aux: 1
-        move(peg, 1, 3)  # aux: 2
-        move(peg, 2, 1)  # aux: 3
-        move(peg, 3, 2)  # aux: 1
-        move(peg, 3, 1)  # aux: 2
-        move(peg, 2, 1)  # aux: 3
-        move(peg, 2, 3)  # aux: 1
-        move(peg, 1, 3)  # aux: 2
-        move(peg, 1, 2)  # aux: 3
-        move(peg, 3, 2)  # aux: 1
-        move(peg, 1, 3)  # aux: 2
-        move(peg, 2, 1)  # aux: 3
-        move(peg, 2, 3)  # aux: 1
-        move(peg, 1, 3)  # aux: 2
+        stack2(peg, 1, 2, 3)
+        move(peg, 1, 3)
+        stack2(peg, 2, 3, 1)
+        move(peg, 1, 2)
+        stack2(peg, 3, 1, 2)
+        move(peg, 3, 2)
+        stack2(peg, 1, 2, 3)
+        move(peg, 1, 3)
+        stack2(peg, 2, 3, 1)
+        move(peg, 2, 1)
+        stack2(peg, 3, 1, 2)
+        move(peg, 2, 3)
+        stack2(peg, 1, 2, 3)
+        move(peg, 1, 3)
+        stack2(peg, 2, 3, 1)
         assert solvedp(peg, num_disks)
 
 
