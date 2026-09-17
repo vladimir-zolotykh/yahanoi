@@ -118,16 +118,14 @@ def write_polys(filename: str = _POLYS_BIN, polys: PolysType = POLYS):
 def read_polys(filename: str = _POLYS_BIN) -> PolysType:
     with open(filename, "rb") as f:
         header: Header = Header.from_file(f)
-        polys: PolysType = []
-        for _ in range(header.num_polys):
-            num_points: int = struct.unpack("<i", f.read(struct.calcsize("<i")))[0]
-            polys.append(
-                [
-                    struct.unpack("<dd", f.read(struct.calcsize("<dd")))
-                    for _ in range(num_points)
-                ]
-            )
-    return polys
+        return [
+            [
+                struct.unpack("<dd", f.read(struct.calcsize("<dd")))
+                for _ in range(num_points)
+            ]
+            for _ in range(header.num_polys)
+            for num_points in [struct.unpack("<i", f.read(struct.calcsize("<i")))[0]]
+        ]
 
 
 if __name__ == "__main__":
