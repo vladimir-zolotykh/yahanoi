@@ -89,3 +89,7 @@ def read_polys(filename: str = _POLYS_BIN) -> PolysType:
                 poly.append(struct.unpack("<dd", f.read(struct.calcsize("<dd"))))
                 polys.append(poly)
     return polys
+
+
+if __name__ == "__main__":
+    write_polys()
