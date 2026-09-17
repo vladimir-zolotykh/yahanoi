@@ -5,7 +5,8 @@ from typing import Self
 from itertools import chain
 import struct
 import io
-from typeguard import typechecked
+
+# from typeguard import typechecked
 
 _PolyType = list[tuple[float, float]]
 PolysType = list[_PolyType]
