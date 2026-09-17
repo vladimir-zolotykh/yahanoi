@@ -121,10 +121,12 @@ def read_polys(filename: str = _POLYS_BIN) -> PolysType:
         polys: PolysType = []
         for _ in range(header.num_polys):
             num_points: int = struct.unpack("<i", f.read(struct.calcsize("<i")))[0]
-            poly: _PolyType = []
-            for _ in range(num_points):
-                poly.append(struct.unpack("<dd", f.read(struct.calcsize("<dd"))))
-            polys.append(poly)
+            polys.append(
+                [
+                    struct.unpack("<dd", f.read(struct.calcsize("<dd")))
+                    for _ in range(num_points)
+                ]
+            )
     return polys
 
 
