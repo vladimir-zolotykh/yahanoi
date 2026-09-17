@@ -56,10 +56,9 @@ def solvedp(pegs: PegsType, num_disks: int) -> bool:
 
 @typechecked
 def stack2(peg: PegsType, src: int, dst: int, aux: int) -> None:
-    dst, aux = aux, dst
-    move(peg, src, dst)
     move(peg, src, aux)
-    move(peg, dst, aux)
+    move(peg, src, dst)
+    move(peg, aux, dst)
 
 
 @typechecked
