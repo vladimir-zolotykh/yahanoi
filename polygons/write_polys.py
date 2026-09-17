@@ -18,17 +18,23 @@ POLYS: PolysType = [
 ]
 
 
+def auto_eq(cls):
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, cls):
+            return self.__dict__ == other.__dict__
+        else:
+            return NotImplemented
+
+    cls.__eq__ = __eq__
+    return cls
+
+
+@auto_eq
 class Point:
     # @typechecked
     def __init__(self, x: float, y: float):
         self.x = x
         self.y = y
-
-    def __eq__(self, other: object) -> bool:
-        if isinstance(other, Point):
-            return self.x == other.x and self.y == other.y
-        else:
-            return NotImplemented
 
     def packed(self):
         return struct.pack("<dd", self.x, self.y)
@@ -38,17 +44,12 @@ class Point:
         return cls(*struct.unpack("<dd", f.read(struct.calcsize("<dd"))))
 
 
+@auto_eq
 class Box:
     # @typechecked
     def __init__(self, p1: Point, p2: Point):
         self.p1 = p1
         self.p2 = p2
-
-    def __eq__(self, other: object) -> bool:
-        if isinstance(other, Box):
-            return self.p1 == other.p1 and self.p2 == other.p2
-        else:
-            return NotImplemented
 
     def packed(self):
         with io.BytesIO() as f:
@@ -68,18 +69,13 @@ def get_bounding_box(polys: PolysType = POLYS) -> Box:
     )
 
 
+@auto_eq
 class Header:
     # @typechecked
     def __init__(self, magic: int, box: Box, num_polys: int):
         self.magic = magic
         self.box = box
         self.num_polys = num_polys
-
-    def __eq__(self, other: object) -> bool:
-        if isinstance(other, Header):
-            return self.magic == other.magic
-        else:
-            return NotImplemented
 
     def packed(self) -> bytes:
         with io.BytesIO() as f:
