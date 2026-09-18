@@ -11,7 +11,7 @@ class Field(ABC):
         self.off = off
 
     def __get__(self, instance, owner=None):
-        self.fetch(instance)
+        return self.fetch(instance)
 
     def __set__(self, instance, value):
         self.drop(instance, value)
@@ -32,7 +32,8 @@ class FieldStr(Field):
 
     def fetch(self, instance):
         rng = slice(self.off, self.off + struct.calcsize(self.fmt))
-        return struct.unpack_from(self.fmt, instance._data[rng])
+        t = struct.unpack_from(self.fmt, instance._data[rng])
+        return t[0] if len(t) == 1 else t
 
     def drop(self, instance, val):
         rng = slice(self.off, self.off + struct.calcsize(self.fmt))
