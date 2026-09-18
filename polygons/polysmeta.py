@@ -54,7 +54,7 @@ class FieldType(Field):
 
 
 class FieldMeta(type):
-    def __new__(mcls, cls, clsname, bases, clsdict):
+    def __new__(mcls, clsname, bases, clsdict):
         off = 0
         fields = []
         for key, val in clsdict.items():
@@ -66,14 +66,14 @@ class FieldMeta(type):
                 fields.append(key)
             elif isinstance(val, type):
                 clsdict[key] = FieldType(key, off, val)
-                off += val.type_size
+                off += val._type_size
                 fields.append(key)
             else:
-                raise TypeError(f"{val!r} must be str or type")
+                continue
         clsdict["_fields"] = fields
         clsdict["_type_size"] = off
 
-        return super().__new__(mcls, cls, clsname, bases, clsdict)
+        return super().__new__(mcls, clsname, bases, clsdict)
 
 
 class View(metaclass=FieldMeta):
@@ -110,11 +110,11 @@ class Sized:
     def iter_as(self, fmt_or_type):
         if isinstance(fmt_or_type, str):
             for off in range(0, len(self.data), struct.calcsize(fmt_or_type)):
-                lump = self.fd.read(struct.calcsize(fmt_or_type))
-                yield struct.unpack_from(fmt_or_type, lump)
+                lump = slice(off, off + struct.calcsize(fmt_or_type))
+                yield struct.unpack_from(fmt_or_type, self.data[lump])
         elif isinstance(fmt_or_type, type):
             for off in range(0, len(self.data), fmt_or_type._type_size):
-                lump = self.slice(0, len(self.data), fmt_or_type._type_size)
+                lump = self.slice(off, off + fmt_or_type._type_size)
                 yield fmt_or_type(self.data[lump])
 
 
@@ -122,7 +122,7 @@ _POLYS_BIN = ".polys.bin"
 
 if __name__ == "__main__":
     with open(_POLYS_BIN, "rb") as fd:
-        hdr = Header(fd)
+        hdr = Header(fd.read(Header._type_size))
         print(hdr.csv())
         polys = Sized(fd.read())
         for pp in polys.iter_as("<dd"):
