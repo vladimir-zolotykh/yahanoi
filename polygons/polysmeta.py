@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from typing import Self, BinaryIO
 from abc import ABC, abstractmethod
 import struct
 
@@ -108,6 +109,11 @@ class Sized:
     def __init__(self, data: bytes | memoryview):
         self.data = memoryview(data)
 
+    @classmethod
+    def from_file(cls, f: BinaryIO) -> Self:
+        (size,) = struct.unpack("<i", f.read(struct.calcsize("<i")))
+        return cls(f.read(size * struct.calcsize("<dd")))
+
     def iter_as(self, fmt_or_type):
         if isinstance(fmt_or_type, str):
             for off in range(0, len(self.data), struct.calcsize(fmt_or_type)):
@@ -125,6 +131,7 @@ if __name__ == "__main__":
     with open(_POLYS_BIN, "rb") as fd:
         hdr = Header(fd.read(Header._type_size))
         print(hdr.csv())
-        polys = Sized(fd.read())
-        for pp in polys.iter_as("<dd"):
-            print(pp)
+        for _ in range(hdr.num_polys):
+            polys = Sized.from_file(fd)
+            for pp in polys.iter_as("<dd"):
+                print(pp)
