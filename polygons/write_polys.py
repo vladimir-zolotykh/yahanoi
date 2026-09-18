@@ -103,12 +103,11 @@ _POLYS_BIN = ".polys.bin"
 def write_polys(filename: str = _POLYS_BIN, polys: PolysType = POLYS):
     header = Header.default()
     with open(filename, "wb") as f:
-        with open(_POLYS_BIN, "wb") as f:
-            f.write(header.packed())
-            for poly in polys:
-                f.write(struct.pack("<i", len(poly)))
-                for point in poly:
-                    f.write(struct.pack("<dd", *point))
+        f.write(header.packed())
+        for poly in polys:
+            f.write(struct.pack("<i", len(poly)))
+            for point in poly:
+                f.write(struct.pack("<dd", *point))
 
 
 def read_polys(filename: str = _POLYS_BIN) -> PolysType:
