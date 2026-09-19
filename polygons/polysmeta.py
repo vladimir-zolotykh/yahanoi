@@ -121,7 +121,7 @@ class Sized:
                 yield struct.unpack_from(fmt_or_type, self.data[lump])
         elif isinstance(fmt_or_type, type):
             for off in range(0, len(self.data), fmt_or_type._type_size):
-                lump = self.slice(off, off + fmt_or_type._type_size)
+                lump = slice(off, off + fmt_or_type._type_size)
                 yield fmt_or_type(self.data[lump])
 
 
@@ -133,5 +133,7 @@ if __name__ == "__main__":
         print(hdr.csv())
         for _ in range(hdr.num_polys):
             polys = Sized.from_file(fd)
-            for pp in polys.iter_as("<dd"):
+            # for pp in polys.iter_as("<dd"):
+            #     print(pp)
+            for pp in polys.iter_as(Point):
                 print(pp)
