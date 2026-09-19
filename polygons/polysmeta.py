@@ -102,18 +102,26 @@ def auto_init(cls):
     def __init__(self, *args):
         super(cls, self).__init__(bytearray(cls._type_size))
         for attr, val in zip(fields, args):
-            setattr(self, attr, val)
+            if isinstance(val, FieldMeta):
+                setattr(self, attr, val._data)
+            elif isinstance(val, (float, int)):
+                setattr(self, attr, float(val))
+            elif hasattr(val, "_data"):
+                setattr(self, attr, val._data)
+            else:
+                raise TypeError(f"Cannot init <class {type(self).__name__!r}>")
 
     cls.__init__ = __init__
     return cls
 
 
-@auto_init
+# @auto_init
 class Point(View):
     x = "<d"
     y = "<d"
 
 
+# @auto_init
 class Box(View):
     p1 = Point
     p2 = Point
@@ -155,10 +163,10 @@ parser.add_argument("--iter-as", required=1, choices=["<dd", "Point"])
 
 
 def test_point():
-    # p = Point(bytearray(Point._type_size))
-    # p.x = 10.1
-    # p.y = 20.2
-    p = Point(10.1, 20.2)
+    p = Point(bytearray(Point._type_size))
+    p.x = 10.1
+    p.y = 20.2
+    # p = Point(10.1, 20.2)
     assert str(p) == "Point(x=10.1, y=20.2)"
 
 
@@ -169,6 +177,9 @@ def test_box():
     b = Box(bytearray(Box._type_size))
     b.p1 = p1
     b.p2 = p1
+    # p1 = Point(10.1, 20.2)
+    # p2 = Point(10.1, 20.2)
+    # b = Box(p1, p2)
     assert str(b) == "Box(p1=Point(x=10.1, y=20.2), p2=Point(x=10.1, y=20.2))"
 
 
@@ -196,7 +207,7 @@ def test_header():
 
 
 if __name__ == "__main__":
-    test_header()
+    test_box()
 # if __name__ == "__main__":
 #     argcomplete.autocomplete(parser)
 #     args = parser.parse_args()
