@@ -94,6 +94,21 @@ class View(metaclass=FieldMeta):
         return f"{type(self).__name__}({self.csv()})"
 
 
+def auto_init(cls):
+    fields = [
+        key for key in vars(cls).keys() if not (key[:2] == "__" and key[-2:] == "__")
+    ]
+
+    def __init__(self, *args):
+        super(cls, self).__init__(bytearray(cls._type_size))
+        for attr, val in zip(fields, args):
+            setattr(self, attr, val)
+
+    cls.__init__ = __init__
+    return cls
+
+
+@auto_init
 class Point(View):
     x = "<d"
     y = "<d"
@@ -140,9 +155,10 @@ parser.add_argument("--iter-as", required=1, choices=["<dd", "Point"])
 
 
 def test_point():
-    p = Point(bytearray(Point._type_size))
-    p.x = 10.1
-    p.y = 20.2
+    # p = Point(bytearray(Point._type_size))
+    # p.x = 10.1
+    # p.y = 20.2
+    p = Point(10.1, 20.2)
     assert str(p) == "Point(x=10.1, y=20.2)"
 
 
