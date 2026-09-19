@@ -6,6 +6,8 @@ from abc import ABC, abstractmethod
 from functools import partial
 from operator import attrgetter
 import struct
+import argparse
+import argcomplete
 
 
 class Field(ABC):
@@ -129,13 +131,22 @@ class Sized:
 
 _POLYS_BIN = ".polys.bin"
 
+parser = argparse.ArgumentParser(
+    description="Show .polys.bin file",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+)
+parser.add_argument("--iter-as", required=1, choices=["<dd", "Point"])
 if __name__ == "__main__":
+    argcomplete.autocomplete(parser)
+    args = parser.parse_args()
     with open(_POLYS_BIN, "rb") as fd:
         hdr = Header(fd.read(Header._type_size))
         print(hdr.csv())
         for _ in range(hdr.num_polys):
             polys = Sized.from_file(fd)
-            for pp in polys.iter_as("<dd"):
-                print(pp)
-            # for pp in polys.iter_as(Point):
-            #     print(pp)
+            if args.iter_as == "<dd":
+                for pp in polys.iter_as("<dd"):
+                    print(pp)
+            else:
+                for pp in polys.iter_as(Point):
+                    print(pp)
