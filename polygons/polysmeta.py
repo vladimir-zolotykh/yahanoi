@@ -8,6 +8,7 @@ from operator import attrgetter
 import struct
 import argparse
 import argcomplete
+import write_polys as WP
 
 
 class Field(ABC):
@@ -42,7 +43,7 @@ class FieldStr(Field):
 
     def drop(self, instance, val):
         rng = slice(self.off, self.off + struct.calcsize(self.fmt))
-        instance._data[rng] = struct.pack(self.fmt, val)  # ???
+        instance._data[rng] = struct.pack(self.fmt, val)
 
 
 class FieldType(Field):
@@ -56,7 +57,7 @@ class FieldType(Field):
 
     def drop(self, instance, val):
         rng = slice(self.off, self.off + self.type_._type_size)
-        instance._data[rng] = val  # ???
+        instance._data[rng] = val._data
 
 
 class FieldMeta(type):
@@ -136,17 +137,61 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument("--iter-as", required=1, choices=["<dd", "Point"])
+
+
+def test_point():
+    p = Point(bytearray(Point._type_size))
+    p.x = 10.1
+    p.y = 20.2
+    assert str(p) == "Point(x=10.1, y=20.2)"
+
+
+def test_box():
+    p1 = Point(bytearray(Point._type_size))
+    p1.x = 10.1
+    p1.y = 20.2
+    b = Box(bytearray(Box._type_size))
+    b.p1 = p1
+    b.p2 = p1
+    assert str(b) == "Box(p1=Point(x=10.1, y=20.2), p2=Point(x=10.1, y=20.2))"
+
+
+def test_header():
+    h0 = WP.Header.default()
+    h = Header(bytearray(Header._type_size))
+    h.magic = h0.magic
+    b0 = h0.box
+    p1 = Point(bytearray(Point._type_size))
+    p2 = Point(bytearray(Point._type_size))
+    p1.x = b0.p1.x
+    p1.y = b0.p1.y
+    p2.x = b0.p2.x
+    p2.y = b0.p2.y
+    b = Box(bytearray(Box._type_size))
+    b.p1 = p1
+    b.p2 = p2
+    h.box = b
+    h.num_polys = h0.num_polys
+    assert (
+        str(h)
+        == "Header(magic=4660, box=Box(p1=Point(x=0.5, y=0.5), p2=Point(x=7.0, y=9.2)), num_polys=3)"
+    )
+    # print(h)
+
+
 if __name__ == "__main__":
-    argcomplete.autocomplete(parser)
-    args = parser.parse_args()
-    with open(_POLYS_BIN, "rb") as fd:
-        hdr = Header(fd.read(Header._type_size))
-        print(hdr.csv())
-        for _ in range(hdr.num_polys):
-            polys = Sized.from_file(fd)
-            if args.iter_as == "<dd":
-                for pp in polys.iter_as("<dd"):
-                    print(pp)
-            else:
-                for pp in polys.iter_as(Point):
-                    print(pp)
+    test_header()
+# if __name__ == "__main__":
+#     argcomplete.autocomplete(parser)
+#     args = parser.parse_args()
+#     with open(_POLYS_BIN, "rb") as fd:
+#         hdr = Header(fd.read(Header._type_size))
+#         print(hdr.csv())
+#         for _ in range(hdr.num_polys):
+#             polys = Sized.from_file(fd)
+#             if args.iter_as == "<dd":
+#                 for pp in polys.iter_as("<dd"):
+#                     print(pp)
+#             else:
+#                 for pp in polys.iter_as(Point):
+#                     print(pp)
