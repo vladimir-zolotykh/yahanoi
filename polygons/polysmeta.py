@@ -3,6 +3,8 @@
 # PYTHON_ARGCOMPLETE_OK
 from typing import Self, BinaryIO
 from abc import ABC, abstractmethod
+from functools import partial
+from operator import attrgetter
 import struct
 
 
@@ -115,14 +117,14 @@ class Sized:
         return cls(f.read(size * struct.calcsize("<dd")))
 
     def iter_as(self, fmt_or_type):
-        if isinstance(fmt_or_type, str):
-            for off in range(0, len(self.data), struct.calcsize(fmt_or_type)):
-                lump = slice(off, off + struct.calcsize(fmt_or_type))
-                yield struct.unpack_from(fmt_or_type, self.data[lump])
-        elif isinstance(fmt_or_type, type):
-            for off in range(0, len(self.data), fmt_or_type._type_size):
-                lump = slice(off, off + fmt_or_type._type_size)
-                yield fmt_or_type(self.data[lump])
+        _size, _factory = (
+            (struct.calcsize, partial(struct.unpack_from, fmt_or_type))
+            if isinstance(fmt_or_type, str)
+            else (attrgetter("_type_size"), fmt_or_type)
+        )
+        for off in range(0, len(self.data), _size(fmt_or_type)):
+            lump = slice(off, off + _size(fmt_or_type))
+            yield _factory(self.data[lump])
 
 
 _POLYS_BIN = ".polys.bin"
@@ -133,7 +135,7 @@ if __name__ == "__main__":
         print(hdr.csv())
         for _ in range(hdr.num_polys):
             polys = Sized.from_file(fd)
-            # for pp in polys.iter_as("<dd"):
-            #     print(pp)
-            for pp in polys.iter_as(Point):
+            for pp in polys.iter_as("<dd"):
                 print(pp)
+            # for pp in polys.iter_as(Point):
+            #     print(pp)
