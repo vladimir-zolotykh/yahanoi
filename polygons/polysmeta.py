@@ -93,6 +93,18 @@ class View(metaclass=FieldMeta):
     def __repr__(self):
         return f"{type(self).__name__}({self.csv()})"
 
+    @classmethod
+    def from_args(cls, *args) -> Self:
+        obj = cls(bytearray(cls._type_size))
+        keys = [
+            key
+            for key in vars(cls).keys()
+            if not (key[:2] == "__" and key[-2:] == "__")
+        ]
+        for key, val in zip(keys, args):
+            setattr(obj, key, val)
+        return obj
+
 
 class Point(View):
     x = "<d"
@@ -140,41 +152,29 @@ parser.add_argument("--iter-as", required=1, choices=["<dd", "Point"])
 
 
 def test_point():
-    p = Point(bytearray(Point._type_size))
-    p.x = 10.1
-    p.y = 20.2
+    p = Point.from_args(10.1, 20.2)
     assert str(p) == "Point(x=10.1, y=20.2)"
 
 
 def test_box():
-    p1 = Point(bytearray(Point._type_size))
-    p1.x = 10.1
-    p1.y = 20.2
-    b = Box(bytearray(Box._type_size))
-    b.p1 = p1
-    b.p2 = p1
+    b = Box.from_args(Point.from_args(10.1, 20.2), Point.from_args(10.1, 20.2))
     assert str(b) == "Box(p1=Point(x=10.1, y=20.2), p2=Point(x=10.1, y=20.2))"
 
 
 def test_header():
     h0 = WP.Header.default()
-    h = Header(bytearray(Header._type_size))
-    h.magic = h0.magic
     b0 = h0.box
-    p1 = Point(bytearray(Point._type_size))
-    p2 = Point(bytearray(Point._type_size))
-    p1.x = b0.p1.x
-    p1.y = b0.p1.y
-    p2.x = b0.p2.x
-    p2.y = b0.p2.y
-    b = Box(bytearray(Box._type_size))
-    b.p1 = p1
-    b.p2 = p2
-    h.box = b
-    h.num_polys = h0.num_polys
-    assert (
-        str(h)
-        == "Header(magic=4660, box=Box(p1=Point(x=0.5, y=0.5), p2=Point(x=7.0, y=9.2)), num_polys=3)"
+    h = Header.from_args(
+        h0.magic,
+        Box.from_args(
+            Point.from_args(b0.p1.x, b0.p1.y), Point.from_args(b0.p2.x, b0.p2.y)
+        ),
+        h0.num_polys,
+    )
+    assert str(h) == (
+        "Header(magic=4660, "
+        "box=Box(p1=Point(x=0.5, y=0.5), p2=Point(x=7.0, y=9.2)), "
+        "num_polys=3)"
     )
 
 
