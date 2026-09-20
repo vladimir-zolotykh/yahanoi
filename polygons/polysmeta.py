@@ -54,7 +54,10 @@ class FieldType(Field):
 
     def fetch(self, instance):
         rng = slice(self.off, self.off + self.type_._type_size)
-        return self.type_(instance._data[rng])
+        obj = self.type_.__new__(self.type_)
+        View.__init__(obj, instance._data[rng])
+        # return self.type_(instance._data[rng])
+        return obj
 
     def drop(self, instance, val):
         rng = slice(self.off, self.off + self.type_._type_size)
@@ -107,16 +110,33 @@ class View(metaclass=FieldMeta):
         return obj
 
 
+def auto_init(cls):
+    fields = [
+        key for key in vars(cls).keys() if not (key[:2] == "__" and key[-2:] == "__")
+    ]
+
+    def __init__(self, *args):
+        super(cls, self).__init__(bytearray(cls._type_size))
+        for key, val in zip(fields, args):
+            setattr(self, key, val)
+
+    cls.__init__ = __init__
+    return cls
+
+
+@auto_init
 class Point(View):
     x = "<d"
     y = "<d"
 
 
+@auto_init
 class Box(View):
     p1 = Point
     p2 = Point
 
 
+@auto_init
 class Header(View):
     magic = "<i"
     box = Box
@@ -140,7 +160,12 @@ class Sized:
         )
         for off in range(0, len(self.data), _size(fmt_or_type)):
             lump = slice(off, off + _size(fmt_or_type))
-            yield _factory(self.data[lump])
+            if isinstance(_factory, type):
+                obj = _factory.__new__(_factory)
+                View.__init__(obj, self.data[lump])
+                yield obj
+            else:
+                yield _factory(self.data[lump])
 
 
 _POLYS_BIN = ".polys.bin"
@@ -152,38 +177,12 @@ parser = argparse.ArgumentParser(
 parser.add_argument("--iter-as", required=1, choices=["<dd", "Point"])
 
 
-# def test_point():
-#     p = Point.from_args(10.1, 20.2)
-#     assert str(p) == "Point(x=10.1, y=20.2)"
-
-
-# def test_box():
-#     b = Box.from_args(Point.from_args(10.1, 20.2), Point.from_args(10.1, 20.2))
-#     assert str(b) == "Box(p1=Point(x=10.1, y=20.2), p2=Point(x=10.1, y=20.2))"
-
-
-# def test_header():
-#     h0 = WP.Header.default()
-#     b0 = h0.box
-#     h = Header.from_args(
-#         h0.magic,
-#         Box.from_args(
-#             Point.from_args(b0.p1.x, b0.p1.y), Point.from_args(b0.p2.x, b0.p2.y)
-#         ),
-#         h0.num_polys,
-#     )
-#     assert str(h) == (
-#         "Header(magic=4660, "
-#         "box=Box(p1=Point(x=0.5, y=0.5), p2=Point(x=7.0, y=9.2)), "
-#         "num_polys=3)"
-#     )
-
-
 if __name__ == "__main__":
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
     with open(_POLYS_BIN, "rb") as fd:
-        hdr = Header(fd.read(Header._type_size))
+        hdr = Header.__new__(Header)
+        View.__init__(hdr, fd.read(Header._type_size))
         print(hdr.csv())
         for _ in range(hdr.num_polys):
             polys = Sized.from_file(fd)

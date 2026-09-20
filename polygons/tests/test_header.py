@@ -5,23 +5,21 @@ from polygons.polysmeta import Point, Box, Header
 
 
 def test_point():
-    p = Point.from_args(10.1, 20.2)
+    p = Point(10.1, 20.2)
     assert str(p) == "Point(x=10.1, y=20.2)"
 
 
 def test_box():
-    b = Box.from_args(Point.from_args(10.1, 20.2), Point.from_args(10.1, 20.2))
+    b = Box(Point(10.1, 20.2), Point(10.1, 20.2))
     assert str(b) == "Box(p1=Point(x=10.1, y=20.2), p2=Point(x=10.1, y=20.2))"
 
 
 def test_header():
     h0 = WP.Header.default()
     b0 = h0.box
-    h = Header.from_args(
+    h = Header(
         h0.magic,
-        Box.from_args(
-            Point.from_args(b0.p1.x, b0.p1.y), Point.from_args(b0.p2.x, b0.p2.y)
-        ),
+        Box(Point(b0.p1.x, b0.p1.y), Point(b0.p2.x, b0.p2.y)),
         h0.num_polys,
     )
     assert str(h) == (
