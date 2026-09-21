@@ -62,10 +62,7 @@ class FieldType(Field):
 
     def fetch(self, instance):
         rng = slice(self.off, self.off + self.type_._type_size)
-        # obj = self.type_.__new__(self.type_)
-        # View.__init__(obj, instance._data[rng])
         obj = init_as(View, self.type_, instance._data[rng])
-        # return self.type_(instance._data[rng])
         return obj
 
     def drop(self, instance, val):
@@ -170,8 +167,6 @@ class Sized:
         for off in range(0, len(self.data), _size(fmt_or_type)):
             lump = slice(off, off + _size(fmt_or_type))
             if isinstance(_factory, type):
-                # obj = _factory.__new__(_factory)
-                # View.__init__(obj, self.data[lump])
                 obj = init_as(View, _factory, self.data[lump])
                 yield obj
             else:
@@ -191,8 +186,6 @@ if __name__ == "__main__":
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
     with open(_POLYS_BIN, "rb") as fd:
-        # hdr = Header.__new__(Header)
-        # View.__init__(hdr, fd.read(Header._type_size))
         hdr = init_as(View, Header, fd.read(Header._type_size))
         print(hdr.csv())
         for _ in range(hdr.num_polys):
