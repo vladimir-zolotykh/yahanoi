@@ -57,7 +57,29 @@ def test_flatten():
     assert flat == [1, 2, 3, 4, 5, 6, 7, 8]
 
 
+def binary_search(data: list[int], target: int, low: int = -1, high: int = -1):
+    if low < 0:
+        low = 0
+    if high < 0:
+        high = len(data)
+    if low >= high:
+        return low
+    mid = (high - low) // 2
+    if target == data[mid]:
+        return mid
+    elif target < data[mid]:
+        return binary_search(data, target, low, mid)
+    else:
+        return binary_search(data, target, mid, high)
+
+
+def test_binary_search():
+    data = [1, 2, 3, 4, 5, 6, 7, 8]
+    assert binary_search(data, 5) == 4
+
+
 if __name__ == "__main__":
     test_max_in_list()
     test_is_palindrome()
     test_flatten()
+    test_binary_search()
