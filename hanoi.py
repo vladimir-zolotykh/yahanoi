@@ -62,6 +62,12 @@ def stack2(peg: PegsType, src: int, dst: int, aux: int) -> None:
 
 
 @typechecked
+def stack2_m(peg: PegsType, src: int, dst: int, aux: int) -> None:
+    stack2(peg, src, dst, aux)
+    move(peg, src, aux)
+
+
+@typechecked
 def solve(peg: PegsType, num_disks: int, src: int, dst: int) -> None:
     if num_disks == 1:
         move(peg, 1, 3)  # aux: 2
@@ -70,8 +76,9 @@ def solve(peg: PegsType, num_disks: int, src: int, dst: int) -> None:
         stack2(peg, 1, 3, 2)
         assert solvedp(peg, num_disks)
     elif num_disks == 3:
-        stack2(peg, 1, 2, 3)
-        move(peg, 1, 3)
+        # stack2(peg, 1, 2, 3)
+        # move(peg, 1, 3)
+        stack2_m(peg, 1, 2, 3)
         stack2(peg, 2, 3, 1)
         assert solvedp(peg, num_disks)
     elif num_disks == 4:
