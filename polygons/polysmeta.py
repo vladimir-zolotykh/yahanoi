@@ -77,13 +77,14 @@ class FieldMeta(type):
         for key, val in clsdict.items():
             if key[:2] == "__" and key[-2:] == "__":
                 continue
-            if isinstance(val, str):
-                clsdict[key] = FieldStr(key, off, val)
-                off += struct.calcsize(val)
-                fields.append(key)
-            elif isinstance(val, type(FieldMeta)):
-                clsdict[key] = FieldType(key, off, val)
-                off += val._type_size
+            if (is_str := isinstance(val, str)) or isinstance(val, type(FieldMeta)):
+                Field, size = (
+                    (FieldStr, struct.calcsize)
+                    if is_str
+                    else (FieldType, attrgetter("_type_size"))
+                )
+                clsdict[key] = Field(key, off, val)
+                off += size(val)
                 fields.append(key)
             else:
                 continue
