@@ -162,15 +162,11 @@ class Sized:
         _size, _factory = (
             (struct.calcsize, partial(struct.unpack_from, fmt_or_type))
             if isinstance(fmt_or_type, str)
-            else (attrgetter("_type_size"), fmt_or_type)
+            else (attrgetter("_type_size"), partial(init_as, View, fmt_or_type))
         )
         for off in range(0, len(self.data), _size(fmt_or_type)):
             lump = slice(off, off + _size(fmt_or_type))
-            if isinstance(_factory, type):
-                obj = init_as(View, _factory, self.data[lump])
-                yield obj
-            else:
-                yield _factory(self.data[lump])
+            yield _factory(self.data[lump])
 
 
 _POLYS_BIN = ".polys.bin"
