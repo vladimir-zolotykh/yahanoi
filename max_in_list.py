@@ -90,6 +90,17 @@ def test_binary_search_not_found():
     assert binary_search(dat, 38) is None
 
 
+def binary(x: int) -> str:
+    if x < 2:
+        return str(x)
+    return binary(x // 2) + binary(x % 2)
+
+
+@pytest.mark.parametrize("x, res", [(1, "1"), (2, "10"), (3, "11"), (5, "101")])
+def test_binary(x, res):
+    assert binary(x) == res
+
+
 if __name__ == "__main__":
     test_max_in_list()
     test_is_palindrome()
