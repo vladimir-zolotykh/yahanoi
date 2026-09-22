@@ -81,12 +81,13 @@ class FieldMeta(type):
                 clsdict[key] = FieldStr(key, off, val)
                 off += struct.calcsize(val)
                 fields.append(key)
-            elif isinstance(val, type):
+            elif isinstance(val, type(FieldMeta)):
                 clsdict[key] = FieldType(key, off, val)
                 off += val._type_size
                 fields.append(key)
             else:
                 continue
+
         clsdict["_fields"] = fields
         clsdict["_type_size"] = off
 
