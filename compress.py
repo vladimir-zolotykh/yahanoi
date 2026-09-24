@@ -3,12 +3,16 @@
 # PYTHON_ARGCOMPLETE_OK
 
 
+def pchunk1(chunk):
+    if chunk[1] > 1:
+        print(chunk)
+    else:
+        print(chunk[0])
+
+
 def print_chunks(lst: list[int], chunk: list[int] = []):
     if not lst:
-        if chunk[1] > 1:
-            print(chunk)
-        else:
-            print(chunk[0])
+        pchunk1(chunk)
         return
     elt = lst[0]
     if chunk == []:
@@ -16,10 +20,7 @@ def print_chunks(lst: list[int], chunk: list[int] = []):
     elif chunk[0] == elt:
         chunk[1] += 1
     else:
-        if chunk[1] > 1:
-            print(chunk)
-        else:
-            print(chunk[0])
+        pchunk1(chunk)
         chunk = [elt, 1]
     print_chunks(lst[1:], chunk)
 
