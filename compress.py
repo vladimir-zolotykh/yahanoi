@@ -1,39 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
-import pytest
 
 
-def cat(lst, chunk):
-    if not lst and not chunk:
-        return []
-    if lst and not chunk:
-        return lst
-    if lst and chunk:
-        return lst + [chunk]
-
-
-def replace_chunks(lst, chunk=[], res=[]):
+def print_chunks(lst: list[int], chunk: list[int] = []):
     if not lst:
-        return cat(res, chunk)
-    if not chunk:
-        chunk = [None, 0]
-    x = lst[0]
-    if chunk[0] == x:
+        if chunk[1] > 1:
+            print(chunk)
+        else:
+            print(chunk[0])
+        return
+    elt = lst[0]
+    if chunk == []:
+        chunk = [elt, 1]
+    elif chunk[0] == elt:
         chunk[1] += 1
-        return replace_chunks(lst[1:], chunk, res)
     else:
-        return replace_chunks(lst[1:], None, cat(res, chunk))
-
-
-@pytest.mark.parametrize(
-    "lst, chunk, res, expected",
-    [
-        ([], [], [], []),
-    ],
-)
-def test_replace_chunks(lst, chunk, res, expected):
-    assert replace_chunks(lst, chunk, res) == expected
+        if chunk[1] > 1:
+            print(chunk)
+        else:
+            print(chunk[0])
+        chunk = [elt, 1]
+    print_chunks(lst[1:], chunk)
 
 
 def count_ones(lst: list[int], count: int = 0) -> int:
