@@ -54,8 +54,8 @@ class Parser:
     def _consume(self) -> None:
         self.tok = next(self.tokens, None)
 
-    def _expect(self, expected: Token) -> None:
-        if self.tok.name != expected.name:
+    def _expect(self, expected: str) -> None:
+        if self.tok.name != expected:
             raise SyntaxError(f"{self.tok}: expected {expected}")
         self._consume()
 
