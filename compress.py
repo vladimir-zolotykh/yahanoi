@@ -26,6 +26,16 @@ def replace_chunks(lst, chunk=[], res=[]):
         return replace_chunks(lst[1:], None, cat(res, chunk))
 
 
+@pytest.mark.parametrize(
+    "lst, chunk, res, expected",
+    [
+        ([], [], [], []),
+    ],
+)
+def test_replace_chunks(lst, chunk, res, expected):
+    assert replace_chunks(lst, chunk, res) == expected
+
+
 def count_ones(lst: list[int], count: int = 0) -> int:
     if not lst:
         return count
