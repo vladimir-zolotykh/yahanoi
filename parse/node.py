@@ -28,20 +28,20 @@ class Binary(Node):
 
 class Plus(Binary):
     @typechecked
-    def __init__(self, val: str, left: Node, right: Node):
+    def __init__(self, left: Node, right: Node):
         super().__init__("+", left, right)
 
 
 class Minus(Binary):
-    def __init__(self, val: str, left: Node, right: Node):
+    def __init__(self, left: Node, right: Node):
         super().__init__("-", left, right)
 
 
 class Mul(Binary):
-    def __init__(self, val: str, left: Node, right: Node):
+    def __init__(self, left: Node, right: Node):
         super().__init__("*", left, right)
 
 
 class Div(Binary):
-    def __init__(self, val: str, left: Node, right: Node):
+    def __init__(self, left: Node, right: Node):
         super().__init__("/", left, right)
