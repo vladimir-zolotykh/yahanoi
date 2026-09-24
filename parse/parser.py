@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+import builtins
 from itertokens import iter_tokens, Token
 from node import Node, Num, Plus, Minus, Mul, Div
+
+
+def next(tokens, default=None):
+    tok = builtins.next(tokens, default)
+    print(f"next {tok = }")
+    return tok
 
 
 class Parser:
