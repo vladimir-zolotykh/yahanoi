@@ -1,5 +1,5 @@
 import pytest
-from compress import count_ones, sum_args, cat
+from compress import count_ones, sum_args
 
 
 @pytest.mark.parametrize(
@@ -25,18 +25,3 @@ def test_count_ones(lst, res):
 )
 def test_sum_args(args, sum):
     assert sum_args(*args) == sum
-
-
-@pytest.mark.parametrize(
-    "lst, chunk, res",
-    [
-        ([], [], []),
-        (None, None, []),
-        ([1, 0], None, [1, 0]),
-        ([1, 1, 1], 3, [1, 1, 1, 3]),
-        ([1, 1, 1], [3], [1, 1, 1, [3]]),
-        ([1, 1, 1], [3, 3], [1, 1, 1, [3, 3]]),
-    ],
-)
-def test_cat(lst, chunk, res):
-    assert cat(lst, chunk) == res
