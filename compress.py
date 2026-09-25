@@ -1,6 +1,40 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+import pytest
+
+
+def jchunk1(all_chunks, chunk):
+    if chunk[1] > 1:
+        return all_chunks + [chunk]
+    else:
+        return all_chunks + [chunk[0]]
+
+
+def join_chunks(
+    lst: list[int], chunk: list[int] = [], all_chunks: list[int | list[int]] = []
+):
+    if not lst:
+        return jchunk1(all_chunks, chunk)
+    elt = lst[0]
+    if chunk == []:
+        chunk = [elt, 1]
+    elif chunk[0] == elt:
+        chunk[1] += 1
+    else:
+        all_chunks = jchunk1(all_chunks, chunk)
+        chunk = [elt, 1]
+    return join_chunks(lst[1:], chunk, all_chunks)
+
+
+@pytest.mark.parametrize(
+    "lst, chunk, all_chunks, expected",
+    [
+        ([1, 1, 1, 0, 1, 0, 0, 0], [], [], [[1, 3], 0, 1, [0, 3]]),
+    ],
+)
+def test_join_chunks(lst, chunk, all_chunks, expected):
+    join_chunks(lst, chunk, all_chunks) == expected
 
 
 def pchunk1(chunk):
