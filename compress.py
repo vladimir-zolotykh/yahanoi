@@ -5,7 +5,7 @@ from operator import getitem, setitem
 import pytest
 
 
-class Chunk(list):
+class NamedList(list):
     def __init__(self, names, values):
         super().__init__(values)
         for i, name in enumerate(names):
