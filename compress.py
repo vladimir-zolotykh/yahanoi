@@ -5,10 +5,10 @@ import pytest
 
 
 def jchunk1(all_chunks, chunk):
-    if chunk[1] > 1:
+    if chunk[0] > 1:
         return all_chunks + [chunk]
     else:
-        return all_chunks + [chunk[0]]
+        return all_chunks + [chunk[1]]
 
 
 def join_chunks(
@@ -18,23 +18,23 @@ def join_chunks(
         return jchunk1(all_chunks, chunk)
     elt = lst[0]
     if chunk == []:
-        chunk = [elt, 1]
-    elif chunk[0] == elt:
-        chunk[1] += 1
+        chunk = [1, elt]
+    elif chunk[1] == elt:
+        chunk[0] += 1
     else:
         all_chunks = jchunk1(all_chunks, chunk)
-        chunk = [elt, 1]
+        chunk = [1, elt]
     return join_chunks(lst[1:], chunk, all_chunks)
 
 
 @pytest.mark.parametrize(
     "lst, chunk, all_chunks, expected",
     [
-        ([1, 1, 1, 0, 1, 0, 0, 0], [], [], [[1, 3], 0, 1, [0, 3]]),
+        ([1, 1, 1, 0, 1, 0, 0, 0], [], [], [[3, 1], 0, 1, [3, 0]]),
     ],
 )
 def test_join_chunks(lst, chunk, all_chunks, expected):
-    join_chunks(lst, chunk, all_chunks) == expected
+    assert join_chunks(lst, chunk, all_chunks) == expected
 
 
 def pchunk1(chunk):
