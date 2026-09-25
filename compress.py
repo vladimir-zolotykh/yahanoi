@@ -1,7 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from operator import getitem, setitem
 import pytest
+
+
+class Chunk(list):
+    def __init__(self, names, values):
+        super().__init__(values)
+        for i, name in enumerate(names):
+            setattr(
+                self.__class__,
+                name,
+                property(
+                    lambda self, i=i: getitem(self, i),
+                    lambda self, val, i=i: setitem(self, i, val),
+                ),
+            )
 
 
 def jchunk1(all_chunks, chunk):
@@ -31,6 +46,7 @@ def join_chunks(
     "lst, chunk, all_chunks, expected",
     [
         ([1, 1, 1, 0, 1, 0, 0, 0], [], [], [[3, 1], 0, 1, [3, 0]]),
+        ([1, 1, 1, 0, 1, 0, 0, 0, 0], [], [], [[3, 1], 0, 1, [4, 0]]),
     ],
 )
 def test_join_chunks(lst, chunk, all_chunks, expected):
