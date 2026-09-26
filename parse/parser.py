@@ -72,3 +72,4 @@ if __name__ == "__main__":
     p = Parser()
     n: None = p.parse(sexpr)
     print(n)
+    print(n.eval())
