@@ -3,7 +3,8 @@
 # PYTHON_ARGCOMPLETE_OK
 # import builtins
 from itertokens import iter_tokens, Token
-from node import Node, Num, Plus, Minus, Mul, Div
+import operator
+from node import Node, Num, Binary, Plus, Minus, Mul, Div
 
 
 # def next(tokens, default=None):
@@ -66,6 +67,21 @@ class Parser:
             raise SyntaxError(f"{self.tok}: expected {expected}")
         self._consume()
 
+
+def num_eval(self) -> float:
+    return self.val
+
+
+def binary_eval(self) -> float:
+    return self._op(self.left.eval(), self.right.eval())
+
+
+Num.eval = num_eval
+Binary.eval = binary_eval
+Plus._op = operator.add
+Minus._op = operator.sub
+Mul._op = operator.mul
+Div._op = operator.truediv
 
 if __name__ == "__main__":
     sexpr = "2 + (3 * 4) + 5"

@@ -17,8 +17,8 @@ class Num(Node):
     def __repr__(self):
         return f"Num({repr(self.val)})"
 
-    def eval(self) -> float:
-        return self.val
+    # def eval(self) -> float:
+    #     return self.val
 
 
 class Binary(Node):
@@ -29,12 +29,12 @@ class Binary(Node):
     def __repr__(self):
         return f"{type(self).__name__}({repr(self.left)}, {repr(self.right)})"
 
-    def eval(self) -> float:
-        return self._op(self.left.eval(), self.right.eval())
+    # def eval(self) -> float:
+    #     return self._op(self.left.eval(), self.right.eval())
 
 
 class Plus(Binary):
-    _op = operator.add
+    # _op = operator.add
 
     @typechecked
     def __init__(self, left: Node, right: Node):
@@ -42,21 +42,21 @@ class Plus(Binary):
 
 
 class Minus(Binary):
-    _op = operator.sub
+    # _op = operator.sub
 
     def __init__(self, left: Node, right: Node):
         super().__init__("-", left, right)
 
 
 class Mul(Binary):
-    _op = operator.mul
+    # _op = operator.mul
 
     def __init__(self, left: Node, right: Node):
         super().__init__("*", left, right)
 
 
 class Div(Binary):
-    _op = operator.truediv
+    # _op = operator.truediv
 
     def __init__(self, left: Node, right: Node):
         super().__init__("/", left, right)
