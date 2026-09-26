@@ -25,11 +25,9 @@ class Chunk(NamedList):
 
 
 def jchunk1(all_chunks: list[int | Chunk], chunk: Chunk):
-    # if chunk[0] > 1:
     if chunk.cnt > 1:
         return all_chunks + [chunk]
     else:
-        # return all_chunks + [chunk[1]]
         return all_chunks + [chunk.val]
 
 
@@ -40,14 +38,11 @@ def join_chunks(
         return jchunk1(all_chunks, chunk)
     elt = lst[0]
     if chunk == []:
-        # chunk = [1, elt]
         chunk = Chunk(1, elt)
     elif chunk[1] == elt:
-        # chunk[0] += 1
         chunk.cnt += 1
     else:
         all_chunks = jchunk1(all_chunks, chunk)
-        # chunk = [1, elt]
         chunk = Chunk(1, elt)
     return join_chunks(lst[1:], chunk, all_chunks)
 
