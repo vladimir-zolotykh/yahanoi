@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
-import builtins
+# import builtins
 from itertokens import iter_tokens, Token
 from node import Node, Num, Plus, Minus, Mul, Div
 
 
-def next(tokens, default=None):
-    tok = builtins.next(tokens, default)
-    print(f"next {tok = }")
-    return tok
+# def next(tokens, default=None):
+#     tok = builtins.next(tokens, default)
+#     print(f"next {tok = }")
+#     return tok
 
 
 class Parser:
@@ -19,10 +19,10 @@ class Parser:
 
     def expr(self):
         res: Node = self.term()
-        while self.tok and self.tok.val in ("+", "-"):
+        while self.tok and (op := self.tok.val) in ("+", "-"):
             self._consume()
             right: Node = self.term()
-            if self.tok.val == "+":
+            if op == "+":
                 res = Plus(res, right)
             else:
                 res = Minus(res, right)
@@ -30,10 +30,10 @@ class Parser:
 
     def term(self) -> Node:
         res: Node = self.factor()
-        while self.tok and self.tok.val in ("*", "/"):
+        while self.tok and (op := self.tok.val) in ("*", "/"):
             self._consume()
             right: Node = self.factor()
-            if self.tok.val == "*":
+            if op == "*":
                 res = Mul(res, right)
             else:
                 res = Div(res, right)
@@ -70,5 +70,5 @@ class Parser:
 if __name__ == "__main__":
     sexpr = "2 + (3 * 4) + 5"
     p = Parser()
-    p.parse(sexpr)
-    print(p)
+    n: None = p.parse(sexpr)
+    print(n)
