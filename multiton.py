@@ -4,6 +4,21 @@
 from collections import defaultdict
 
 
+def _get_key(*args, **kwargs):
+    return args + tuple(sorted([f"{k}={v}" for k, v in kwargs.items()]))
+
+
+class Cached(type):
+    _cache = defaultdict(dict)
+
+    def __call__(cls, *args, **kwargs):
+        cache = type(cls)._cache
+        key = _get_key(*args, **kwargs)
+        if cls not in cache or key not in cache[cls]:
+            cache[cls][key] = super().__call__(*args, **kwargs)
+        return cache[cls][key]
+
+
 class Singleton(type):
     _instances = {}
 
@@ -42,7 +57,19 @@ class Connection(metaclass=Multiton):
         print(f"Initialize Connection({key})")
 
 
+class Person(metaclass=Cached):
+    def __init__(self, name, age, salary):
+        print(f"Initialize Person({name}, {age}, {salary})")
+        self.name = name
+        self.age = age
+        self.salary = salary
+
+
 if __name__ == "__main__":
+    bob = Person("Bob", 37, 12000)
+    assert Person("Bob", 37, 12000) is bob
+    bob2 = Person("Bob", 38, 12000)
+
     c1 = Connection("Vista")
     c2 = Connection("Vista")
     assert c1 is c2
