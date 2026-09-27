@@ -1,19 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from collections import defaultdict
 
 
 class Singleton(type):
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
-        if cls not in Singleton._instances:
-            Singleton._instances[cls] = super().__call__(*args, **kwargs)
-        return Singleton._instances[cls]
+        instances = type(cls)._instances
+        if cls not in instances:
+            instances[cls] = super().__call__(*args, **kwargs)
+        return instances[cls]
 
 
 class Multiton(type):
-    pass
+    _instances = defaultdict(dict)
+
+    def __call__(cls, key, *args, **kwargs):
+        if cls not in Multiton._instances or key not in Multiton._instances[cls]:
+            Multiton._instances[cls] = super().__call__(cls, key, *args, **kwargs)
+        return Multiton._instances[cls][key]
 
 
 class Module(metaclass=Singleton):
