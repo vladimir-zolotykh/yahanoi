@@ -26,6 +26,7 @@ def init_pegs():
 
 
 def solve3():
+    print(*pegs)
     for from_, to in [
         (0, 2),
         (0, 1),
@@ -36,4 +37,4 @@ def solve3():
         (0, 2),
     ]:
         move(from_, to)
-        print(f"move({from_}, {to}) -- {pegs}")
+        print(f"{from_}->{to}", "--", *pegs)
