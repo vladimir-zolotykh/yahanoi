@@ -10,8 +10,8 @@ def validate(from_, to) -> None:
     if not pegs[to]:
         return
     disk = pegs[from_][-1]
-    if disk > pegs[to][-1]:
-        raise ValueError(f"Cannot put {disk}[{from_}] over {pegs[to][-1]}[{to}]")
+    if disk > (under := pegs[to][-1]):
+        raise ValueError(f"Cannot put {disk}[{from_}] over {under}[{to}]")
 
 
 def move(from_: int, to: int) -> None:
