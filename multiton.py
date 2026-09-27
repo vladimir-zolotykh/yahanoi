@@ -18,9 +18,10 @@ class Multiton(type):
     _instances = defaultdict(dict)
 
     def __call__(cls, key, *args, **kwargs):
-        if cls not in Multiton._instances or key not in Multiton._instances[cls]:
-            Multiton._instances[cls] = super().__call__(cls, key, *args, **kwargs)
-        return Multiton._instances[cls][key]
+        instances = type(cls)._instances
+        if cls not in instances or key not in instances[cls]:
+            instances[cls][key] = super().__call__(key, *args, **kwargs)
+        return instances[cls][key]
 
 
 class Module(metaclass=Singleton):
@@ -35,7 +36,16 @@ class Logger(metaclass=Singleton):
         print(f"Initialize Logger({name})")
 
 
+class Connection(metaclass=Multiton):
+    def __init__(self, key):
+        self.key = key
+        print(f"Initialize Connection({key})")
+
+
 if __name__ == "__main__":
+    c1 = Connection("Vista")
+    c2 = Connection("Vista")
+    assert c1 is c2
     m1 = Module()
     m2 = Module()
     assert m1 is m2
