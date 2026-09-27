@@ -38,3 +38,12 @@ def solve3():
     ]:
         move(from_, to)
         print(f"{from_}->{to}", "--", *pegs)
+
+
+def solve8(n, from_, to, aux):
+    print(f"{n = }, {from_ = }, {to = }, {aux = }")
+    if n <= 0:
+        return
+    solve8(n - 1, from_, aux, to)
+    move(from_, to)
+    solve8(n - 1, aux, to, from_)
