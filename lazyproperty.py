@@ -11,23 +11,20 @@ import pytest
 class lazyproperty:
     def __init__(self, func: Callable):
         self._func = func
-        self.cache_name = ""  # instance cache name
-        self.cache = {}  # instance cache dict
+        self.cache_name = f"_cache_{self._func.__name__}"
 
     def __call__(self, instance, n, *args, **kwargs):
-        print(f"{self = }, {instance = }, {n = }, {args = }, {kwargs = }")
-        if n in self.cache:
-            return self.cache[n]
+        cache = getattr(instance, self.cache_name)
+        if n in cache:
+            return cache[n]
         else:
-            # val = self._func(n)
             val = MethodType(self._func, instance)(n)
-            self.cache[n] = val
+            getattr(instance, self.cache_name)[n] = val
             return val
 
     def __get__(self, instance, owner=None):
         if not instance:
             return self
-        self.cache_name = f"_cache_{self._func.__name__}"
         if not getattr(instance, self.cache_name, None):
             setattr(instance, self.cache_name, {})
         return MethodType(self, instance)
