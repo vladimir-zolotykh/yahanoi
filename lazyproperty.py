@@ -75,12 +75,30 @@ def test_fib(n, res):
     assert fib(n) == res
 
 
+def test_cache_off(capsys):
+    b = Box()
+    n = 37
+    lazyproperty.cache_on = False
+    with perf_counter_on(f"fib({n}) elapsed"):
+        print(b.fib(n))
+    assert capsys.readouterr().out.startswith("24157817\nfib(37) elapsed elapsed:")
+
+
+def test_cache_on(capsys):
+    b = Box()
+    n = 37
+    lazyproperty.cache_on = True
+    with perf_counter_on(f"fib({n}) elapsed"):
+        print(b.fib(n))
+    assert capsys.readouterr().out.startswith("24157817\nfib(37) elapsed elapsed:")
+
+
 if __name__ == "__main__":
     b = Box()
     print(b.fib(10))
     print(b.fib(20))
     lazyproperty.cache_on = True
-    n = 38
+    n = 37
     lazyproperty.cache_on = False
     with perf_counter_on(f"fib({n}) elapsed"):
         print(b.fib(n))
