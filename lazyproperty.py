@@ -21,7 +21,7 @@ class lazyproperty:
             return cache[n]
         else:
             val = MethodType(self._func, instance)(n)
-            getattr(instance, self.cache_name)[n] = val
+            cache[n] = val
             return val
 
     def __get__(self, instance, owner=None):
@@ -36,7 +36,8 @@ class lazyproperty:
 def perf_counter_on(label: str = "perfcounter"):
     start = perf_counter()
     yield
-    print("Elapsed: ", perf_counter() - start)
+    # print(f"{label} elapsed: ", perf_counter() - start)
+    print("{:s} elapsed: {:.2f}".format(label, perf_counter() - start))
 
 
 def fib(n):
@@ -49,7 +50,10 @@ def fib(n):
 class Box:
     @lazyproperty
     def fib(self, n: int) -> int:
-        return fib(n)
+        if n >= 2:
+            return self.fib(n - 2) + self.fib(n - 1)
+        else:
+            return n
 
 
 @pytest.mark.parametrize(
@@ -75,3 +79,8 @@ if __name__ == "__main__":
     b = Box()
     print(b.fib(10))
     print(b.fib(20))
+    lazyproperty.cache_on = True
+    n = 38
+    lazyproperty.cache_on = False
+    with perf_counter_on(f"fib({n}) elapsed"):
+        print(b.fib(n))
