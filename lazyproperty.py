@@ -9,13 +9,15 @@ import pytest
 
 
 class lazyproperty:
+    cache_on = True
+
     def __init__(self, func: Callable):
         self._func = func
         self.cache_name = f"_cache_{self._func.__name__}"
 
     def __call__(self, instance, n, *args, **kwargs):
         cache = getattr(instance, self.cache_name)
-        if n in cache:
+        if self.cache_on and n in cache:
             return cache[n]
         else:
             val = MethodType(self._func, instance)(n)
