@@ -39,13 +39,6 @@ def fib(n):
         return n
 
 
-def fib_no_cache(n):
-    if n >= 2:
-        return fib_no_cache(n - 2) + fib_no_cache(n - 1)
-    else:
-        return n
-
-
 parser = argparse.ArgumentParser(
     description="Cache Fibonacci results",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -61,5 +54,6 @@ if __name__ == "__main__":
                 print("Cache is on")
                 res = fib(n)
             else:
-                res = fib_no_cache(n)
+                fib = fib.__wrapped__
+                res = fib(n)
         print(f"{res = }")
