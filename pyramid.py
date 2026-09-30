@@ -6,12 +6,21 @@ from array import array
 import argparse
 import pytest
 import argcomplete
+from copy import copy
+from lazyproperty import lazyproperty
 
 
 class Board:
     def __init__(self, disks: int):
+        self.disks = disks
         self.pegs = [array("i", range(disks, 0, -1)), array("i"), array("i")]
         self.moves: int = 0
+
+    def __copy__(self):
+        brd = Board(self.disks)
+        for i in range(self.disks):
+            brd.pegs[i] = copy(self.pegs[i])
+        return brd
 
     def __str__(self):
         return ", ".join(str(a.tolist()) for a in self.pegs)
@@ -29,6 +38,7 @@ class Board:
         self.moves += 1
         return self
 
+    @lazyproperty
     def solve(self, n: int, from_: int, to: int, aux: int) -> Self:
         if n <= 0:
             return self

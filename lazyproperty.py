@@ -6,6 +6,7 @@ from types import MethodType
 from contextlib import contextmanager
 from time import perf_counter
 import pytest
+from copy import copy
 
 
 class lazyproperty:
@@ -16,12 +17,14 @@ class lazyproperty:
         self.cache_name = f"_cache_{self._func.__name__}"
 
     def __call__(self, instance, n, *args, **kwargs):
+        key = (n,) + tuple(args) + tuple(sorted(f"{k}={v}" for k, v in kwargs.items()))
         cache = getattr(instance, self.cache_name)
-        if self.cache_on and n in cache:
-            return cache[n]
+        if self.cache_on and key in cache:
+            # return copy(cache[key])
+            return cache[key]
         else:
-            val = MethodType(self._func, instance)(n)
-            cache[n] = val
+            val = MethodType(self._func, instance)(n, *args, **kwargs)
+            cache[key] = val
             return val
 
     def __get__(self, instance, owner=None):
