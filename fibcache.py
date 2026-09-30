@@ -44,16 +44,16 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument("--n", type=int, nargs="+", default=[5])
-parser.add_argument("--cache-on", type=int)
+parser.add_argument("--cache-off", action="store_true")
 argcomplete.autocomplete(parser)
 if __name__ == "__main__":
     args = parser.parse_args()
     for n in args.n:
         with perf_counter_on(f"fib({n})"):
-            if args.cache_on:
-                print("Cache is on")
+            if args.cache_off:
+                print("Cache is off")
+                fib = fib.__wrapped__
                 res = fib(n)
             else:
-                fib = fib.__wrapped__
                 res = fib(n)
         print(f"{res = }")
