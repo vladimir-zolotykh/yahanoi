@@ -29,10 +29,10 @@ class Board:
 
     def solve(self, n: int, from_: int, to: int, aux: int) -> Self:
         if n <= 0:
-            return Self
+            return self
         self.solve(n - 1, from_, aux, to)
         self.move(from_, to)
-        self.solve(n - 1, aux, to, from_)
+        return self.solve(n - 1, aux, to, from_)
 
 
 @pytest.mark.parametrize(
@@ -52,3 +52,10 @@ def test_solve(n, peg, total):
     board.solve(n, 0, 2, 1)
     assert str(board) == f"[], [], {peg}"
     assert board.moves == total
+
+
+if __name__ == "__main__":
+    n = 3
+    board = Board(3)
+    res = board.solve(n, 0, 2, 1)
+    print(res)
