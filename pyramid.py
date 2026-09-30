@@ -49,9 +49,9 @@ class Board:
 def test_solve(n, peg, total):
     board = Board(n)
     assert str(board) == f"{peg}, [], []"
-    board.solve(n, 0, 2, 1)
-    assert str(board) == f"[], [], {peg}"
-    assert board.moves == total
+    res = board.solve(n, 0, 2, 1)
+    assert str(res) == f"[], [], {peg}"
+    assert res.moves == total
 
 
 if __name__ == "__main__":
