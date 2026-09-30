@@ -3,7 +3,9 @@
 # PYTHON_ARGCOMPLETE_OK
 from typing import Self
 from array import array
+import argparse
 import pytest
+import argcomplete
 
 
 class Board:
@@ -54,8 +56,25 @@ def test_solve(n, peg, total):
     assert res.moves == total
 
 
+parser = argparse.ArgumentParser(
+    description="Solve Hanoi for [3-8] disks",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+)
+argcomplete.autocomplete(parser)
+
+parser.add_argument(
+    "--n",
+    type=int,
+    nargs="+",
+    default=[3],
+    choices=list(range(3, 9)),
+    help="Number of disks",
+)
+
+# Usage: $ python pyramid.py --n 3 4 5
 if __name__ == "__main__":
-    n = 3
-    board = Board(3)
-    res = board.solve(n, 0, 2, 1)
-    print(res)
+    args = parser.parse_args()
+    for n in args.n:
+        board = Board(n)
+        res = board.solve(n, 0, 2, 1)
+        print(res)
