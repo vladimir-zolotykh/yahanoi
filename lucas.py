@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from typing import Self
+from functools import wraps
 from array import array
 from copy import copy
 import argparse
@@ -28,6 +29,23 @@ class Board:
         return board
 
 
+def lucascache(func):
+    cache = {}
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        key = tuple(args) + tuple(sorted(f"{k}={v}" for k, v in kwargs.items()))
+        if key in cache:
+            res = cache[key]
+        else:
+            res = func(*args, **kwargs)
+            cache[key] = res
+        return res
+
+    return wrapper
+
+
+@lucascache
 def solve(board: Board, n: int, from_: int, to: int, aux: int) -> Board:
     if n <= 0:
         return board
