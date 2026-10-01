@@ -14,6 +14,10 @@ class Board:
         self.num_disks = sum(len(peg) for peg in pegs)
         self.num_moves = 0
 
+    def __repr__(self):
+        pegs = [str(peg.tolist()) for peg in self.pegs]
+        return f"Board({pegs})"
+
     @classmethod
     def from_num_disks(cls, num_disks: int = 3) -> Self:
         pegs = [array("i", list(range(num_disks, 0, -1))), array("i"), array("i")]
@@ -59,7 +63,7 @@ parser.add_argument(
     type=int,
     nargs="+",
     default=[3],
-    choices=list(range(3, 8)),
+    choices=list(range(3, 9)),
     help="Number of disks",
 )
 
