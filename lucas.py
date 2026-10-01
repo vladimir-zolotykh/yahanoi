@@ -28,15 +28,15 @@ def solve(board: Board, n: int, from_: int, to: int, aux: int) -> Board:
     if n <= 0:
         return board
     board = copy(board)
-    solve(board, n - 1, from_, aux, to)
+    board = solve(board, n - 1, from_, aux, to)
     move(board, from_, to)
-    return solve(n - 1, aux, to, from_)
+    return solve(board, n - 1, aux, to, from_)
 
 
 def move(board: Board, from_: int, to: int) -> Board:
-    validate(from_, to)
+    validate(board, from_, to)
     board.pegs[to].append(board.pegs[from_].pop())
-    board.moves += 1
+    board.num_moves += 1
     return board
 
 
@@ -67,6 +67,6 @@ parser.add_argument(
 if __name__ == "__main__":
     args = parser.parse_args()
     for n in args.n:
-        board = Board(n)
-        res = board.solve(n, 0, 2, 1)
+        board = Board.from_num_disks(n)
+        res = solve(board, n, 0, 2, 1)
         print(res)
