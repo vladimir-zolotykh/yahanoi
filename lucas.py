@@ -33,13 +33,14 @@ CACHE_OFF = False
 
 
 def lucascache(func):
-    if CACHE_OFF:
-        return func
     cache = {}
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        key = tuple(args) + tuple(sorted(f"{k}={v}" for k, v in kwargs.items()))
+        if CACHE_OFF:
+            return func(*args, **kwargs)
+
+        key = tuple(args) + tuple(sorted(kwargs.items()))
         if key in cache:
             res = cache[key]
         else:
@@ -86,7 +87,7 @@ parser.add_argument(
     type=int,
     nargs="+",
     default=[3],
-    choices=list(range(3, 9)),
+    choices=list(range(3, 39)),
     help="Number of disks",
 )
 
