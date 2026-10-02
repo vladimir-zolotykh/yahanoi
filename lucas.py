@@ -29,7 +29,12 @@ class Board:
         return board
 
 
+CACHE_OFF = False
+
+
 def lucascache(func):
+    if CACHE_OFF:
+        return func
     cache = {}
 
     @wraps(func)
@@ -74,8 +79,8 @@ parser = argparse.ArgumentParser(
     description="Solve Hanoi for [3-8] disks",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
-argcomplete.autocomplete(parser)
 
+parser.add_argument("--cache-off", action="store_true")
 parser.add_argument(
     "--n",
     type=int,
@@ -87,7 +92,11 @@ parser.add_argument(
 
 # Usage: $ python pyramid.py --n 3 4 5
 if __name__ == "__main__":
+    argcomplete.autocomplete(parser)
     args = parser.parse_args()
+    CACHE_OFF = args.cache_off
+    if args.cache_off:
+        print("cache is off")
     for n in args.n:
         board = Board.from_num_disks(n)
         res = solve(board, n, 0, 2, 1)
