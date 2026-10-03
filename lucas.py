@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from typing import Self
-from functools import wraps
+from functools import wraps, cache
 from array import array
 from copy import copy
 import argparse
@@ -14,6 +14,14 @@ class Board:
         self.pegs = [copy(peg) for peg in pegs]
         self.num_disks = sum(len(peg) for peg in pegs)
         self.num_moves = 0
+
+    def __hash__(self):
+        return hash(tuple(tuple(peg) for peg in self.pegs))
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Board):
+            return NotImplemented
+        return self.pegs == other.pegs
 
     def __repr__(self):
         pegs = [str(peg.tolist()) for peg in self.pegs]
@@ -33,24 +41,26 @@ CACHE_OFF = False
 
 
 def lucascache(func):
-    cache = {}
+    _cache = {}
 
     @wraps(func)
     def wrapper(*args, **kwargs):
         if CACHE_OFF:
             return func(*args, **kwargs)
 
-        key = tuple(args) + tuple(sorted(kwargs.items()))
-        if key in cache:
-            res = cache[key]
+        # key = tuple(args) + tuple(sorted(kwargs.items()))
+        key = tuple(args)
+        if key in _cache:
+            res = _cache[key]
         else:
             res = func(*args, **kwargs)
-            cache[key] = res
+            _cache[key] = res
         return res
 
     return wrapper
 
 
+# @cache
 @lucascache
 def solve(board: Board, n: int, from_: int, to: int, aux: int) -> Board:
     if n <= 0:
@@ -87,7 +97,7 @@ parser.add_argument(
     type=int,
     nargs="+",
     default=[3],
-    choices=list(range(3, 39)),
+    # choices=list(range(3, 9)),
     help="Number of disks",
 )
 
