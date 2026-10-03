@@ -41,7 +41,7 @@ CACHE_OFF = False
 
 
 def lucascache(func):
-    _cache = {}
+    cached = {}
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -50,11 +50,11 @@ def lucascache(func):
 
         # key = tuple(args) + tuple(sorted(kwargs.items()))
         key = tuple(args)
-        if key in _cache:
-            res = _cache[key]
+        if key in cached:
+            res = cached[key]
         else:
             res = func(*args, **kwargs)
-            _cache[key] = res
+            cached[key] = res
         return res
 
     return wrapper
