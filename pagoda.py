@@ -23,7 +23,7 @@ class Board:
         pegs = [array("i", list(range(num_disks, 0, -1))), array("i"), array("i")]
         return cls(*pegs)
 
-    def solve(self, n: int, src: int, dst: int, aux: int):
+    def solve(self, n: int, src: int = 0, dst: int = 2, aux: int = 1):
         if n <= 0:
             return
         self.solve(n - 1, src, aux, dst)
@@ -62,5 +62,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     for n in args.n:
         board = Board.from_num_disks(n)
-        board.solve(n, 0, 2, 1)
+        # board.solve(n, 0, 2, 1)
+        board.solve(n)
         print(board)
