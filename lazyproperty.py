@@ -17,13 +17,16 @@ class lazyproperty:
         self.cache_name = f"_cache_{self._func.__name__}"
 
     def __call__(self, instance, n, *args, **kwargs):
-        key = (n,) + tuple(args) + tuple(sorted(f"{k}={v}" for k, v in kwargs.items()))
+        # instance: Board
+        key = (repr(instance),) + (n,) + tuple(args)
         cache = getattr(instance, self.cache_name)
         if self.cache_on and key in cache:
             # return copy(cache[key])
             return cache[key]
         else:
+            instance = eval(cache[key][0])
             val = MethodType(self._func, instance)(n, *args, **kwargs)
+            # new_key = ???
             cache[key] = val
             return val
 

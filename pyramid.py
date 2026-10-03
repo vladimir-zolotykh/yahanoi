@@ -16,11 +16,33 @@ class Board:
         self.pegs = [array("i", range(disks, 0, -1)), array("i"), array("i")]
         self.moves: int = 0
 
+    @classmethod
+    def from_num_disks(cls, num_disks: int) -> Self:
+        brd = cls(num_disks)
+        brd.disks = num_disks
+        brd.pegs = [array("i", range(num_disks, 0, -1)), array("i"), array("i")]
+        brd.moves: int = 0
+        return brd
+
+    @classmethod
+    def from_pegs(cls, *pegs: array, moves: int = 0) -> Self:
+        num_disks: int = sum(len(p) for p in pegs)
+        brd = cls(num_disks)
+        brd.disks = num_disks
+        brd.moves = moves
+        for i in range(3):
+            brd.pegs[i] = copy(pegs[i])
+        return brd
+
     def __copy__(self):
         brd = Board(self.disks)
         for i in range(self.disks):
             brd.pegs[i] = copy(self.pegs[i])
         return brd
+
+    def __repr__(self):
+        pegs = ", ".join(str(peg) for peg in self.pegs)
+        return f"Board.from_pegs({pegs})"
 
     def __str__(self):
         return ", ".join(str(a.tolist()) for a in self.pegs)
