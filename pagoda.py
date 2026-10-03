@@ -23,24 +23,24 @@ class Board:
         pegs = [array("i", list(range(num_disks, 0, -1))), array("i"), array("i")]
         return cls(*pegs)
 
-    def solve(self, n: int, from_: int, to: int, aux: int):
+    def solve(self, n: int, src: int, dst: int, aux: int):
         if n <= 0:
             return
-        self.solve(n - 1, from_, aux, to)
-        self.move(from_, to)
-        self.solve(n - 1, aux, to, from_)
+        self.solve(n - 1, src, aux, dst)
+        self.move(src, dst)
+        self.solve(n - 1, aux, dst, src)
 
-    def move(self, from_: int, to: int) -> None:
-        self.validate(from_, to)
-        self.pegs[to].append(self.pegs[from_].pop())
+    def move(self, src: int, dst: int) -> None:
+        self.validate(src, dst)
+        self.pegs[dst].append(self.pegs[src].pop())
         self.num_moves += 1
 
-    def validate(self, from_: int, to: int) -> None:
-        if not self.pegs[to]:
+    def validate(self, src: int, dst: int) -> None:
+        if not self.pegs[dst]:
             return
-        disk: int = self.pegs[from_][-1]
-        if disk > (under := self.pegs[to][-1]):
-            raise ValueError(f"Cannot put {disk}[{from_}] over {under}[{to}]")
+        disk: int = self.pegs[src][-1]
+        if disk > (under := self.pegs[dst][-1]):
+            raise ValueError(f"Cannot put {disk}[{src}] over {under}[{dst}]")
 
 
 parser = argparse.ArgumentParser(
