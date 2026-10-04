@@ -13,6 +13,7 @@ class Board:
         self.pegs = [copy(peg) for peg in pegs]
         self.num_disks = sum(len(peg) for peg in pegs)
         self.num_moves = 0
+        self.depth = 0
 
     def __repr__(self):
         pegs = [str(peg.tolist()) for peg in self.pegs]
@@ -26,13 +27,17 @@ class Board:
     def solve(self, n: int, src: int = 0, dst: int = 2, aux: int = 1):
         if n <= 0:
             return
+        depth = self.depth
+        self.depth += 1
         self.solve(n - 1, src, aux, dst)
         self.move(src, dst)
         self.solve(n - 1, aux, dst, src)
+        self.depth = depth
 
     def move(self, src: int, dst: int) -> None:
         self.validate(src, dst)
         self.pegs[dst].append(self.pegs[src].pop())
+        print(f"[{self.depth}] " + "    " * (self.depth - 1) + f"{src}->{dst}")
         self.num_moves += 1
 
     def validate(self, src: int, dst: int) -> None:
@@ -52,7 +57,7 @@ parser.add_argument(
     type=int,
     nargs="+",
     default=[3],
-    choices=list(range(3, 9)),
+    choices=list(range(1, 9)),
     help="Number of disks",
 )
 
