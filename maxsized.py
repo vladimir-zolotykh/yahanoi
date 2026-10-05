@@ -6,11 +6,12 @@ from abc import ABC, abstractmethod
 
 class Validator(ABC):
     def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+        # for k, v in kwargs.items():
+        #     setattr(self, k, v)
+        pass
 
     def __set_name__(self, owner, name):
-        self._name = name
+        self._name = f"sys_{name}"
 
     @abstractmethod
     def validate(self, instance, val):
@@ -56,7 +57,7 @@ class SizedString(String):
         self.size = size
 
     def validate(self, instance, val):
-        if len > self.size:
+        if len(val) > self.size:
             raise ValueError(f"{val}: must have {self.size} chars or less")
 
 
