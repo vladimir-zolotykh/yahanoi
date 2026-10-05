@@ -77,3 +77,12 @@ class Stock:
         self.name = name
         self.shares = shares
         self.price = price
+
+
+def test_stock():
+    s = Stock("ACME", 90, 123.4)
+    print(s)
+
+
+if __name__ == "__main__":
+    test_stock()
