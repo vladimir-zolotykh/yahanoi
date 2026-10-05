@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from abc import ABC, abstractmethod
+import pytest
 
 
 class Validator(ABC):
@@ -57,6 +58,7 @@ class SizedString(String):
         self.size = size
 
     def validate(self, instance, val):
+        super().validate(instance, val)
         if len(val) > self.size:
             raise ValueError(f"{val}: must have {self.size} chars or less")
 
@@ -81,6 +83,15 @@ class Stock:
 
     def __repr__(self):
         return f"Stock({self.name}, {self.shares}, {self.price})"
+
+
+def test_string():
+    s = Stock("ACME", 90, 123.4)
+    assert s.name == "ACME"
+    with pytest.raises(TypeError, match="401: must be of type <class 'str'>"):
+        s.name = 401
+    with pytest.raises(ValueError, match="ABRACADABRA: must have 8 chars or less"):
+        s.name = "ABRACADABRA"
 
 
 def test_stock():
