@@ -69,9 +69,9 @@ class UnsignedFloat(Float, Unsigned):
 
 
 class Stock:
-    name = SizedString("name", size=8)
-    shares = UnsignedInteger("shares")
-    price = UnsignedFloat("price")
+    name = SizedString(size=8)
+    shares = UnsignedInteger()
+    price = UnsignedFloat()
 
     def __init__(self, name, shares, price):
         self.name = name
