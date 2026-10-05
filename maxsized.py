@@ -64,7 +64,9 @@ class SizedString(String):
 
 
 class UnsignedInteger(Integer, Unsigned):
-    pass
+    def validate(self, instance, val):
+        super().validate(instance, val)
+        super(Typed, self).validate(instance, val)
 
 
 class UnsignedFloat(Float, Unsigned):
@@ -83,6 +85,15 @@ class Stock:
 
     def __repr__(self):
         return f"Stock({self.name}, {self.shares}, {self.price})"
+
+
+def test_unsignedinteger():
+    s = Stock("ACME", 90, 123.4)
+    assert s.shares == 90
+    with pytest.raises(TypeError, match="90.0: must be of type <class 'int'>"):
+        s.shares = 90.0
+    with pytest.raises(ValueError, match="-30 must be positive"):
+        s.shares = -30
 
 
 def test_string():
