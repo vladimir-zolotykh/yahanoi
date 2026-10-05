@@ -4,7 +4,7 @@
 from abc import ABC, abstractmethod
 
 
-class Validator:
+class Validator(ABC):
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -13,7 +13,7 @@ class Validator:
         self._name = name
 
     @abstractmethod
-    def validate(self, instance, value):
+    def validate(self, instance, val):
         pass
 
     def __get__(self, instance, owner):
@@ -21,45 +21,54 @@ class Validator:
             return self
         return getattr(instance, self._name)
 
-    def __set__(self, instance, value):
-        self.validate(value)
-        setattr(instance, self._name, value)
+    def __set__(self, instance, val):
+        self.validate(instance, val)
+        setattr(instance, self._name, val)
 
 
 class Typed(Validator):
-    pass
+    def validate(self, instance, val):
+        if not isinstance(val, self.expected):
+            raise TypeError(f"{val}: must be of type {self.expected}")
 
 
 class Unsigned(Validator):
-    pass
+    def validate(self, instance, val):
+        if val < 0:
+            raise ValueError(f"{val} must be positive")
 
 
 class Integer(Typed):
-    pass
+    expected = int
 
 
 class Float(Typed):
-    pass
+    expected = float
 
 
 class String(Typed):
-    pass
+    expected = str
 
 
 class SizedString(String):
+    def __init__(self, size=8):
+        super().__init__()
+        self.size = size
+
+    def validate(self, instance, val):
+        if len > self.size:
+            raise ValueError(f"{val}: must have {self.size} chars or less")
+
+
+class UnsignedInteger(Integer, Unsigned):
     pass
 
 
-class UnsignedInteger(Integer):
-    pass
-
-
-class UnsignedFloat(Float):
+class UnsignedFloat(Float, Unsigned):
     pass
 
 
 class Stock:
-    # Specify constraints
     name = SizedString("name", size=8)
     shares = UnsignedInteger("shares")
     price = UnsignedFloat("price")
