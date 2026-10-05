@@ -70,7 +70,9 @@ class UnsignedInteger(Integer, Unsigned):
 
 
 class UnsignedFloat(Float, Unsigned):
-    pass
+    def validate(self, instance, val):
+        super().validate(instance, val)
+        super(Typed, self).validate(instance, val)
 
 
 class Stock:
@@ -85,6 +87,15 @@ class Stock:
 
     def __repr__(self):
         return f"Stock({self.name}, {self.shares}, {self.price})"
+
+
+def test_unsignedfloat():
+    s = Stock("ACME", 90, 123.4)
+    assert s.price == 123.4
+    with pytest.raises(TypeError, match="too much: must be of type <class 'float'>"):
+        s.price = "too much"
+    with pytest.raises(ValueError, match="-30.3 must be positive"):
+        s.price = -30.3
 
 
 def test_unsignedinteger():
